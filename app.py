@@ -23,8 +23,9 @@ def create():
     email = request.form.get('email')
     username = request.form.get('username')
     password = request.form.get('password')
+    hashed_password = generate_password_hash(password)
 
-    new_user = User(full_name, email, username, password)
+    new_user = User(full_name, email, username, hashed_password)
     db.session.add(new_user)
     db.session.commit()
 
@@ -54,7 +55,8 @@ def authenticate():
     password = request.form.get('password')
     user = User.query.filter_by(username=username)
     try:
-        if user.all()[0].password == password:
+        password_check = check_password_hash(user.all()[0].password, password)
+        if password_check:
             flash('Welcome to Instgram Clone!', 'info')
             return redirect(url_for('home', signed_in=True, user_full_name=user.all()[0].full_name))
         else:
