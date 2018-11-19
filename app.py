@@ -1,6 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash
 from database import db, app
-from models import Puppy
+from models import User
 
 
 @app.route("/")
