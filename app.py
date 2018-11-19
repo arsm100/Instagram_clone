@@ -8,7 +8,8 @@ from flask_login import login_manager, LoginManager
 @app.route("/")
 def home():
     user_full_name = request.args.get('user_full_name')
-    return render_template('home.html', user_full_name=user_full_name)
+    signed_in = request.args.get('signed_in')
+    return render_template('home.html', signed_in=signed_in, user_full_name=user_full_name)
 
 
 @app.route("/users/new")
@@ -38,8 +39,30 @@ def index():
 
 @app.route("/users/<id>", methods=["GET"])
 def show(id):
-    puppy = Puppy.query.get(id)
-    return render_template('puppies/show.html', puppy=puppy)
+    user = User.query.get(id)
+    return render_template('users/show.html', user=user)
+
+
+@app.route("/users/sign_in")
+def sign_in():
+    return render_template('users/sign_in.html')
+
+
+@app.route("/users/sign_in", methods=["POST"])
+def authenticate():
+    username = request.form.get('username')
+    password = request.form.get('password')
+    user = User.query.filter_by(username=username)
+    try:
+        if user.all()[0].password == password:
+            flash('Welcome to Instgram Clone!', 'info')
+            return redirect(url_for('home', signed_in=True, user_full_name=user.all()[0].full_name))
+        else:
+            flash('Wrong Password!', 'Warning')
+            return redirect(url_for('home', signed_in=False))
+    except IndexError:
+        flash('User doesn\'t exist!', 'Warning')
+        return redirect(url_for('home', signed_in=False))
 
 
 @app.route("/puppies/<id>/edit", methods=["GET"])

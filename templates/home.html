@@ -3,11 +3,20 @@
 Home
 {% endblock %}
 {% block content %}
+
 {% if user_full_name %}
 <h2>Welcome {{user_full_name}}!</h2>
-{% endif %}
-<h1>Welcome to Instagram Clone</h1>
 <br>
-<a href="{{ url_for('new') }}" class="btn btn-primary">Sign up!</a>
+{% endif %}
+
+<h1>Welcome</h1>
+<br>
 <a href="{{ url_for('index') }}" class="btn btn-primary">Check out all the users!</a>
+<br>
+<br>
+{% if signed_in != "True" %}
+<a href="{{ url_for('sign_in') }}" class="btn btn-primary">Sign in!</a>
+<a href="{{ url_for('new') }}" class="btn btn-primary">Sign up!</a>
+{% endif %}
+
 {% endblock %}
