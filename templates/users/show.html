@@ -1,0 +1,23 @@
+{% extends "_base.html" %}
+{% block title %}
+One puppy!
+{% endblock %}
+{% block content %}
+<h1>YOUR SELECTED PUPPY!</h1>
+<table class="table-striped table-bordered" width=80% style="text-align: center">
+    <tr>
+        <th style="text-align: center">ID</th>
+        <th style="text-align: center">Name</th>
+        <th style="text-align: center">Age</th>
+        <th style="text-align: center">Breed</th>
+    </tr>
+    <tr>
+        <td>{{puppy.id}}</td>
+        <td>{{puppy.name}}</td>
+        <td>{{puppy.age}}</td>
+        <td>{{puppy.breed}}</td>
+    </tr>
+    </th>
+
+</table>
+{% endblock %}

@@ -1,39 +1,42 @@
 from flask import render_template, request, redirect, url_for, flash
 from database import db, app
 from models import User
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import login_manager, LoginManager
 
 
 @app.route("/")
 def home():
-    puppy_name = request.args.get('puppy_name')
-    return render_template('home.html', puppy_name=puppy_name)
+    user_full_name = request.args.get('user_full_name')
+    return render_template('home.html', user_full_name=user_full_name)
 
 
-@app.route("/puppies/new")
+@app.route("/users/new")
 def new():
-    return render_template('puppies/new.html')
+    return render_template('users/new.html')
 
 
-@app.route("/puppies", methods=["POST"])
+@app.route("/users", methods=["POST"])
 def create():
-    name = request.form.get('name')
-    age = request.form.get('age')
-    breed = request.form.get('breed')
+    full_name = request.form.get('full_name')
+    email = request.form.get('email')
+    username = request.form.get('username')
+    password = request.form.get('password')
 
-    new_puppy = Puppy(name, age, breed)
-    db.session.add(new_puppy)
+    new_user = User(full_name, email, username, password)
+    db.session.add(new_user)
     db.session.commit()
 
-    return redirect(url_for('home', puppy_name=new_puppy.name))
+    return redirect(url_for('home', user_full_name=new_user.full_name))
 
 
-@app.route("/puppies", methods=["GET"])
+@app.route("/users", methods=["GET"])
 def index():
-    puppies = Puppy.query.all()
-    return render_template('puppies/index.html', puppies=puppies)
+    users = User.query.all()
+    return render_template('users/index.html', users=users)
 
 
-@app.route("/puppies/<id>", methods=["GET"])
+@app.route("/users/<id>", methods=["GET"])
 def show(id):
     puppy = Puppy.query.get(id)
     return render_template('puppies/show.html', puppy=puppy)
