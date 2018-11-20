@@ -10,11 +10,13 @@ from flask_migrate import Migrate
 # basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
-app.secret_key = "don't tell anyone"
 
+app.config['SECRET_KEY'] = os.environ['SECRET_KEY']
 # Connects our Flask App to our Database
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['CSRF_ENABLED'] = True
+app.config['USER_ENABLE_EMAIL'] = False
 
 db = SQLAlchemy(app)
 

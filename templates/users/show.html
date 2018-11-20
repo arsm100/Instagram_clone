@@ -1,21 +1,37 @@
 {% extends "_base.html" %}
 {% block title %}
-One puppy!
+One user!
 {% endblock %}
 {% block content %}
-<h1>YOUR SELECTED PUPPY!</h1>
+<h1>YOUR SELECTED USER!</h1>
 <table class="table-striped table-bordered" width=80% style="text-align: center">
     <tr>
         <th style="text-align: center">ID</th>
-        <th style="text-align: center">Name</th>
-        <th style="text-align: center">Age</th>
-        <th style="text-align: center">Breed</th>
+        <th style="text-align: center">Full Name</th>
+        <th style="text-align: center">Email</th>
+        <th style="text-align: center">User Name</th>
+        <th style="text-align: center">Password</th>
+        <th style="text-align: center">Edit!</th>
+        <th style="text-align: center">DELETE!</th>
     </tr>
     <tr>
-        <td>{{puppy.id}}</td>
-        <td>{{puppy.name}}</td>
-        <td>{{puppy.age}}</td>
-        <td>{{puppy.breed}}</td>
+        <td>{{user.id}}</td>
+        <td>{{user.full_name}}</td>
+        <td>{{user.email}}</td>
+        <td>{{user.username}}</td>
+        <td>{{user.password}}</td>
+        <td>
+            <form action="{{ url_for('edit',id=user.id) }}" method="GET">
+                <input type="hidden" name="_method" value="PUT">
+                <button type="submit" class="btn btn-primary">Edit</button>
+            </form>
+        </td>
+        <td>
+            <form action="{{ url_for('update_or_destroy',id=user.id) }}" method="POST">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-primary">DELETE</button>
+            </form>
+        </td>
     </tr>
     </th>
 
