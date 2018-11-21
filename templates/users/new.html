@@ -6,6 +6,7 @@ User Sign-up
 <p>Please fill your information:</p>
 
 <form action="{{ url_for('create') }}" method="POST">
+  {{ form.csrf_token }}
 
   <div class="form-group">
     <label for="full_name">Full Name:</label>

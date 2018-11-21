@@ -18,8 +18,12 @@ class User(db.Model, UserMixin):
         self.username = username
         self.password = password
 
-    def get_id():
-        return self.email
+    def get_id(self):
+        return self.username
 
     def __repr__(self):
         return f"User {self.full_name} has email {self.email} and username {self.username}"
+
+    # @validates('username')
+    # @validation_preparation
+    # def

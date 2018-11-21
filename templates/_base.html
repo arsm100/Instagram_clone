@@ -25,6 +25,9 @@
   </div>
 
   <div class="container-fluid">
+    {% if current_user.is_authenticated %}
+    Hi {{ current_user.full_name }}! You are logged in!
+    {% endif %}
     {% block content %}
     {% endblock %}
   </div>

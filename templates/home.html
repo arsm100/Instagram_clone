@@ -9,10 +9,16 @@ Home
 <br>
 <br>
 <br>
-{% if signed_in != "True" %}
-<a href="{{ url_for('sign_in') }}" class="btn btn-primary">Sign in!</a>
+{% if not current_user.is_authenticated %}
+<a href="{{ url_for('login') }}" class="btn btn-primary">Sign in!</a>
 <a href="{{ url_for('new') }}" class="btn btn-primary">Sign up!</a>
 
+
+{% endif %}
+{% if current_user.is_authenticated %}
+<a href="{{ url_for('profile') }}" class="btn btn-primary">Profile!</a>
+<a href="{{ url_for('index') }}" class="btn btn-primary">All users!</a>
+<a href="{{ url_for('logout') }}" class="btn btn-primary">Log out!</a>
 {% endif %}
 
 {% endblock %}
