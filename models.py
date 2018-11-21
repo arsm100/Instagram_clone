@@ -1,5 +1,6 @@
 from database import db
 from flask_login import UserMixin
+from werkzeug.security import check_password_hash
 
 
 class User(db.Model, UserMixin):
@@ -24,6 +25,14 @@ class User(db.Model, UserMixin):
     def __repr__(self):
         return f"User {self.full_name} has email {self.email} and username {self.username}"
 
-    # @validates('username')
-    # @validation_preparation
-    # def
+
+def authenticate(username, password):
+    try:
+        user = User.query.filter_by(username=username).all()[0]
+        password_check = check_password_hash(user.password, password)
+        if password_check:
+            return user
+        else:
+            flash('Wrong Username/Password!', 'Warning')
+    except IndexError:
+        flash('Wrong Username/Password!', 'Warning')

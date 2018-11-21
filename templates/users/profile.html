@@ -5,10 +5,16 @@ User Profile!
 {% block content %}
 <h1>User Profile</h1>
 <h2>Welcome to your private profile, {{current_user.full_name}}!</h2>
-
-<a href="{{ url_for('index') }}" class="btn btn-primary">Check out all the users!</a>
-<a href="{{ url_for('settings') }}" class="btn btn-primary">Settings</a>
-<a href="{{ url_for('logout') }}" class="btn btn-primary">Logout</a>
-
-
+<div class="container" style="">
+    <a href="{{ url_for('index') }}" class="btn btn-primary">Check out all the users!</a>
+    <form action="{{ url_for('update_or_destroy',id=current_user.id) }}" method="GET">
+        <input type="hidden" name="_method" value="PUT">
+        <button type="submit" class="btn btn-primary">Edit your details</button>
+    </form>
+    <a href="{{ url_for('logout') }}" class="btn btn-primary">Logout</a>
+    <form action="{{ url_for('update_or_destroy',id=current_user.id) }}" method="GET">
+        <input type="hidden" name="_method" value="DELETE">
+        <button type="submit" class="alert alert-danger btn btn-primary">DELETE YOUR ACCOUNT</button>
+    </form>
+</div>
 {% endblock %}

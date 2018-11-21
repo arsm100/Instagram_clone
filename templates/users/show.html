@@ -4,7 +4,7 @@ One user!
 {% endblock %}
 {% block content %}
 <h1>YOUR SELECTED USER!</h1>
-<table class="table-striped table-bordered" width=80% style="text-align: center">
+<table class="table-striped table-bordered" width=100% style="text-align: center; table-layout:fixed; word-wrap:break-word">
     <tr>
         <th style="text-align: center">ID</th>
         <th style="text-align: center">Full Name</th>
@@ -21,13 +21,13 @@ One user!
         <td>{{user.username}}</td>
         <td>{{user.password}}</td>
         <td>
-            <form action="{{ url_for('edit',id=user.id) }}" method="GET">
+            <form action="{{ url_for('update_or_destroy',id=user.id) }}" method="GET">
                 <input type="hidden" name="_method" value="PUT">
                 <button type="submit" class="btn btn-primary">Edit</button>
             </form>
         </td>
         <td>
-            <form action="{{ url_for('update_or_destroy',id=user.id) }}" method="POST">
+            <form action="{{ url_for('update_or_destroy',id=user.id) }}" method="GET">
                 <input type="hidden" name="_method" value="DELETE">
                 <button type="submit" class="btn btn-primary">DELETE</button>
             </form>
