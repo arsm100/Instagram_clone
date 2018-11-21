@@ -73,10 +73,6 @@ def show(id):
     return render_template('users/show.html', user=user)
 
 
-# @app.route("/users/sign_in", methods=['GET'])
-# def sign_in():
-#     return render_template('users/sign_in.html')
-
 def authenticate(username, password):
     try:
         user = User.query.filter_by(username=username).all()[0]
