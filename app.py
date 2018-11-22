@@ -19,9 +19,9 @@ login_manager.login_view = "login"
 
 
 @login_manager.user_loader
-def load_user(username):
+def load_user(id):
     try:
-        return User.query.filter_by(username=username).all()[0]
+        return User.query.get(id)
     except IndexError:
         pass
 
@@ -51,10 +51,13 @@ def create():
             hashed_password = generate_password_hash(form.password.data)
             new_user = User(form.full_name.data, form.email.data,
                             form.username.data, hashed_password)
-            db.session.add(new_user)
-            db.session.commit()
-            login_user(new_user)
-            return redirect(url_for('profile'))
+
+            if len(new_user.validation_errors) == 0:
+                db.session.add(new_user)
+                db.session.commit()
+                login_user(new_user)
+                return redirect(url_for('profile'))
+            return render_template('users/new.html', form=form, validation_errors=new_user.validation_errors)
         return render_template('users/new.html', form=form)
 
 
@@ -95,14 +98,8 @@ def settings():
 @login_required
 def logout():
     logout_user()
+    flash('Logged out successfully.')
     return redirect(url_for('home'))
-
-
-# @app.route("/users/<id>/edit", methods=["GET"])
-# @login_required
-# def edit(id):
-#     user = User.query.get(id)
-#     return render_template('users/edit.html', user=user)
 
 
 @app.route("/users/<id>/edit", methods=["GET", "POST"])
