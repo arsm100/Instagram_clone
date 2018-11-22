@@ -1,64 +1,25 @@
 from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash, escape, sessions, abort
 from jinja2 import TemplateNotFound
-from database import db, app
-from models import User, authenticate
+from instagram import app, db
+from instagram.users.models import User
 from werkzeug.security import generate_password_hash
 from flask_login import login_manager, LoginManager, AnonymousUserMixin, login_url, login_user, logout_user, login_required, current_user
 from flask_wtf import FlaskForm, Form
-from flask_wtf.csrf import CsrfProtect
 from wtforms import StringField, PasswordField, SubmitField, validators
-from forms import LoginForm, SignupForm, EditForm, DeleteForm
-
-
-login_manager = LoginManager()
-login_manager.init_app(app)
-csrf = CsrfProtect(app)
-login_manager.session_protection = "basic"
-login_manager.login_message = "Please login to Ahmed's Instagram first."
-login_manager.login_view = "login"
-
-
-@login_manager.user_loader
-def load_user(id):
-    try:
-        return User.query.get(id)
-    except IndexError:
-        pass
+from forms import LoginForm, EditForm, DeleteForm
 
 
 @app.route("/")
 def home():
     user_full_name = request.args.get('user_full_name')
-    signed_in = request.args.get('signed_in')
-    return render_template('home.html', signed_in=signed_in, user_full_name=user_full_name)
+    return render_template('home.html', user_full_name=user_full_name)
 
 
-@app.route("/users/profile")
-@login_required
-def profile():
-    user_full_name = request.args.get('user_full_name')
-    return render_template('users/profile.html', user_full_name=user_full_name)
-
-
-@app.route("/users/new", methods=['GET', 'POST'])
-def create():
-    if current_user.is_authenticated:
-        flash('You must be logged out to sign up!', 'warning')
-        return redirect(url_for('home'))
-    else:
-        form = SignupForm()
-        if form.validate_on_submit():
-            hashed_password = generate_password_hash(form.password.data)
-            new_user = User(form.full_name.data, form.email.data,
-                            form.username.data, hashed_password)
-
-            if len(new_user.validation_errors) == 0:
-                db.session.add(new_user)
-                db.session.commit()
-                login_user(new_user)
-                return redirect(url_for('profile'))
-            return render_template('users/new.html', form=form, validation_errors=new_user.validation_errors)
-        return render_template('users/new.html', form=form)
+# @app.route("/users/profile")
+# @login_required
+# def profile():
+#     user_full_name = request.args.get('user_full_name')
+#     return render_template('users/profile.html', user_full_name=user_full_name)
 
 
 @app.route("/users", methods=["GET"])
@@ -72,20 +33,6 @@ def index():
 def show(id):
     user = User.query.get(id)
     return render_template('users/show.html', user=user)
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = authenticate(form.username.data, form.password.data)
-        if user is None:
-            return redirect(url_for('login'))
-        login_user(user)
-        flash('Logged in successfully.')
-        next = request.args.get('next')
-        return redirect(next or url_for('profile'))
-    return render_template('login.html', form=form)
 
 
 @app.route("/settings")
