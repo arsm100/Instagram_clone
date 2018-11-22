@@ -35,6 +35,8 @@ login_manager.login_message = "Please login to Ahmed's Instagram first."
 login_manager.login_view = "login"
 
 from instagram.users.views import users_blueprint
+from instagram.sessions.views import sessions_blueprint
+
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix="/sessions")
 # app.register_blueprint(images_blueprint, url_prefix="/images")
