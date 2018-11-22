@@ -5,7 +5,7 @@ from flask_login import login_user, logout_user, login_url, login_required
 
 
 sessions_blueprint = Blueprint(
-    'sessions', __name__, template_folder='sessions/templates/sessions')
+    'sessions', __name__, template_folder='templates/')
 
 
 @sessions_blueprint.route('/new', methods=['GET', 'POST'])
@@ -14,12 +14,12 @@ def login():
     if form.validate_on_submit():
         user = authenticate(form.username.data, form.password.data)
         if user is None:
-            return redirect(url_for('login'))
+            return redirect(url_for('sessions.login'))
         login_user(user)
         flash('Logged in successfully.')
         next = request.args.get('next')
         return redirect(next or url_for('users.profile'))
-    return render_template('new.html', form=form)
+    return render_template('sessions/new.html', form=form)
 
 
 @sessions_blueprint.route("/logout")

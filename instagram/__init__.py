@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import login_manager, LoginManager
@@ -34,9 +34,15 @@ login_manager.session_protection = "basic"
 login_manager.login_message = "Please login to Ahmed's Instagram first."
 login_manager.login_view = "login"
 
+
+@app.route("/")
+def home():
+    user_full_name = request.args.get('user_full_name')
+    return render_template('home.html', user_full_name=user_full_name)
+
+
 from instagram.users.views import users_blueprint
 from instagram.sessions.views import sessions_blueprint
-
 app.register_blueprint(users_blueprint, url_prefix="/users")
-app.register_blueprint(sessions_blueprint, url_prefix="/sessions")
+app.register_blueprint(sessions_blueprint, url_prefix="/")
 # app.register_blueprint(images_blueprint, url_prefix="/images")
