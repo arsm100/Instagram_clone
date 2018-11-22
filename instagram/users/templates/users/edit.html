@@ -4,7 +4,7 @@ User Editor!
 {% endblock %}
 {% block content %}
 <h1>Edit a User</h1>
-<form action="{{ url_for('update_or_destroy',id=id, next = request.args.get('next')) }}" method="POST">
+<form action="{{ url_for('users.update_or_destroy',id=id, next = request.args.get('next')) }}" method="POST">
   <input type="hidden" name="_method" value="PUT">
   {{ form.csrf_token }}
 

@@ -1,10 +1,9 @@
 import re
-from database import db
+from instagram import db
 from flask_login import UserMixin
-from flask import flash, url_for
-from werkzeug.security import check_password_hash
+from flask import url_for
 from sqlalchemy.orm import validates
-from helpers import validation_preparation
+from instagram.helpers import validation_preparation
 
 
 class User(db.Model, UserMixin):
@@ -59,20 +58,8 @@ class User(db.Model, UserMixin):
         if not password:
             self.validation_errors.append('Password not provided')
 
-        if len(password) < 8 or len(password) > 50:
+        if len(password) < 8:
             self.validation_errors.append(
                 'Password must be between 8 and 50 characters')
 
         return password
-
-
-def authenticate(username, password):
-    try:
-        user = User.query.filter_by(username=username).first()
-        password_check = check_password_hash(user.password, password)
-        if password_check:
-            return user
-        else:
-            flash('Wrong Username/Password!', 'Warning')
-    except AttributeError:
-        flash('Wrong Username/Password!', 'Warning')

@@ -1,9 +1,9 @@
 {% extends "_base.html" %}
 {% block title %}
-All the users!
+One user!
 {% endblock %}
 {% block content %}
-<h1>User List!</h1>
+<h1>YOUR SELECTED USER!</h1>
 <table class="table-striped table-bordered" width=100% style="text-align: center; table-layout:fixed; word-wrap:break-word">
     <tr>
         <th style="text-align: center">ID</th>
@@ -14,7 +14,6 @@ All the users!
         <th style="text-align: center">Edit!</th>
         <th style="text-align: center">DELETE!</th>
     </tr>
-    {% for user in users %}
     <tr>
         <td>{{user.id}}</td>
         <td>{{user.full_name}}</td>
@@ -22,23 +21,19 @@ All the users!
         <td>{{user.username}}</td>
         <td>{{user.password}}</td>
         <td>
-            <form action="{{ url_for('update_or_destroy',id=user.id) }}" method="GET">
+            <form action="{{ url_for('users.update_or_destroy',id=user.id) }}" method="GET">
                 <input type="hidden" name="_method" value="PUT">
                 <button type="submit" class="btn btn-primary">Edit</button>
             </form>
         </td>
         <td>
-            <form action="{{ url_for('update_or_destroy',id=user.id) }}" method="GET">
+            <form action="{{ url_for('users.update_or_destroy',id=user.id) }}" method="GET">
                 <input type="hidden" name="_method" value="DELETE">
                 <button type="submit" class="btn btn-primary">DELETE</button>
             </form>
         </td>
     </tr>
-    {% endfor %}
     </th>
 
 </table>
-<br>
-<a href="{{ url_for('home') }}" class="btn btn-primary">Home</a>
-
 {% endblock %}
