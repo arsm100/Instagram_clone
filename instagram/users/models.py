@@ -15,6 +15,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.Text, nullable=False, unique=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False, server_default='')
+    profile_picture_URL = db.Column(
+        db.Text, nullable=False, server_default='https://s3.amazonaws.com/ahmed-clone-instagram/generic_profile_pic.png')
 
     def __init__(self, full_name, email, username, password):
         self.full_name = full_name
@@ -55,6 +57,7 @@ class User(db.Model, UserMixin):
     @validates('password')
     @validation_preparation
     def validate_password(self, key, password):
+        print("------------------->")
         if not password:
             self.validation_errors.append('Password not provided')
 

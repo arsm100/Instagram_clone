@@ -1,5 +1,6 @@
 from instagram import app
 
 
-if __name__ == '__main__':
-    app.run()
+print("HI-----------------------\n")
+# if __name__ == '__main__':
+    # app.run()

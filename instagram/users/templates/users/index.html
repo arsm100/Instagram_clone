@@ -11,6 +11,7 @@ All the users!
         <th style="text-align: center">Email</th>
         <th style="text-align: center">User Name</th>
         <th style="text-align: center">Password</th>
+        <th style="text-align: center">Profile Pic</th>
         <th style="text-align: center">Edit!</th>
         <th style="text-align: center">DELETE!</th>
     </tr>
@@ -21,6 +22,7 @@ All the users!
         <td>{{user.email}}</td>
         <td>{{user.username}}</td>
         <td>{{user.password}}</td>
+        <td>{{user.profile_picture_URL}}</td>
         <td>
             <form action="{{ url_for('users.update_or_destroy',id=user.id) }}" method="GET">
                 <input type="hidden" name="_method" value="PUT">

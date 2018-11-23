@@ -1,5 +1,5 @@
 from werkzeug.security import generate_password_hash
-from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash, escape, sessions
+from flask import Blueprint, render_template, request, redirect, url_for, flash, escape, sessions
 from instagram.users.models import User
 from instagram.users.forms import SignupForm, EditForm, DeleteForm
 from instagram import db, login_manager
@@ -89,8 +89,7 @@ def update_or_destroy(id):
                 db.session.add(editted_user)
                 db.session.commit()
                 flash('User details updated successfully.')
-                next = request.args.get('next')
-                return redirect(next or url_for('users.profile'))
+                return redirect(url_for('users.profile'))
             return render_template('users/edit.html', User=User, id=id, form=form)
         if request.args.get('_method') == 'DELETE':
             form = DeleteForm()
