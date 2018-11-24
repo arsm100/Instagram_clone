@@ -1,6 +1,5 @@
 from instagram.helpers import s3
 from flask import flash, redirect, url_for
-from instagram import S3_LOCATION
 
 
 def upload_file_to_s3(file, bucket_name, acl="public-read"):
@@ -24,4 +23,4 @@ def upload_file_to_s3(file, bucket_name, acl="public-read"):
         flash("Something Happened: ", e)
         return redirect(url_for('images.upload'))
 
-    return f"{S3_LOCATION}{file.filename}"
+    return file.filename

@@ -25,29 +25,30 @@ def upload_image(id):
             # check there is a file
         if "user_photo" not in request.files:
             flash("No photo was uploaded")
-            return redirect(url_for('upload'))
+            return redirect(url_for('images.upload', id = current_user.id))
 
             # grab the photo
         file = request.files["user_photo"]
 
-        # check there is a name
+            # check there is a name
         if file.filename == "":
-            flash("Please upload your photo!")
-            return redirect(url_for('upload'))
+            flash("Please give your photo a valid name!")
+            return redirect(url_for('images.upload', id = current_user.id))
 
             # check correct extension and upload if valid
         if file and allowed_file(file.filename):
             file.filename = secure_filename(file.filename)
             output = upload_file_to_s3(file, S3_BUCKET)
             editted_user = User.query.get(current_user.id)
-            editted_user.profile_picture_URL = str(output)
+            editted_user.profile_picture_name = str(output)
             db.session.add(editted_user)
             db.session.commit()
             flash('Profile picture updated successfully.')
             return redirect(url_for('users.profile'))
 
         else:
-            return redirect(url_for('upload'))
+            flash('Please upload a valid photo file!')
+            return redirect(url_for('images.upload', id = current_user.id))
     else:
         flash('UNAUTHORIZED!!')
         return render_template('users/profile.html')

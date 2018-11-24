@@ -1,8 +1,9 @@
 import re
-from instagram import db
+from instagram import db, S3_LOCATION
 from flask_login import UserMixin
 from flask import url_for
 from sqlalchemy.orm import validates
+from sqlalchemy.ext.hybrid import hybrid_property
 from instagram.helpers import validation_preparation
 
 
@@ -15,8 +16,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.Text, nullable=False, unique=True)
     username = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.String(255), nullable=False, server_default='')
-    profile_picture_URL = db.Column(
-        db.Text, nullable=False, server_default='https://s3.amazonaws.com/ahmed-clone-instagram/generic_profile_pic.png')
+    profile_picture_name = db.Column(
+        db.Text, nullable=False, server_default='generic_profile_pic.png')
 
     def __init__(self, full_name, email, username, password):
         self.full_name = full_name
@@ -66,3 +67,7 @@ class User(db.Model, UserMixin):
                 'Password must be between 8 and 50 characters')
 
         return password
+
+    @hybrid_property
+    def image_url(self):
+        return f'{S3_LOCATION}{self.profile_picture_name}'
