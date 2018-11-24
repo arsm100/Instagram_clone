@@ -70,18 +70,20 @@ class TestingConfig(Config):
 
 app.config.from_object(DevelopmentConfig)
 
-from instagram.images.views import images_blueprint
-from instagram.sessions.views import sessions_blueprint
-from instagram.users.views import users_blueprint
+#SuperAdmins
+super_admins = {'ahmedramzy160', 'Josh777'}
 
 # Blue Print
+from instagram.users.views import users_blueprint
+from instagram.sessions.views import sessions_blueprint
+from instagram.images.views import images_blueprint
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix="/")
 app.register_blueprint(images_blueprint, url_prefix="/images")
 
 
+
 # Home Page
 @app.route("/")
 def home():
-    user_full_name = request.args.get('user_full_name')
-    return render_template('home.html', user_full_name=user_full_name)
+    return render_template('home.html')

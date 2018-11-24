@@ -7,7 +7,7 @@ DELETE ACCOUNT!
   <input type="hidden" name="_method" value="DELETE">
   {{ form.csrf_token }}
 
-  <button type="submit" class="btn btn-primary">COFIRM PERMENANT ACCOUNT REMOVAL</button>
+  <button type="submit" class="btn btn-primary">COFIRM PERMENANT ACCOUNT REMOVAL OF {{User.query.get(id).username}}</button>
 </form>
 
 {% endblock %}

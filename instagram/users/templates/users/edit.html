@@ -3,6 +3,15 @@
 User Editor!
 {% endblock %}
 {% block content %}
+
+{% if form.errors.items() %}
+{% for key, value in form.errors.items() %}
+<div class="alert alert-danger">
+  {{ value[0] }}
+</div>
+{% endfor %}
+{% endif %}
+
 <h1>Edit a User</h1>
 <form action="{{ url_for('users.update_or_destroy',id=id, next = request.args.get('next')) }}" method="POST">
   <input type="hidden" name="_method" value="PUT">

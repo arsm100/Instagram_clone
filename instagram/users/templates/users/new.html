@@ -3,6 +3,15 @@
 User Sign-up
 {% endblock %}
 {% block content %}
+
+{% if form.errors.items() %}
+{% for key, value in form.errors.items() %}
+<div class="alert alert-danger">
+  {{ value[0] }}
+</div>
+{% endfor %}
+{% endif %}
+
 <p>Please fill your information:</p>
 
 <form action="{{ url_for('users.create') }}" method="POST">

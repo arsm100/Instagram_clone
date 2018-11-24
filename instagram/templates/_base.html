@@ -12,21 +12,27 @@
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <link rel="stylesheet" href="./../static/style.css">
+  <link rel="stylesheet" href="./../../../static/style.css">
 </head>
 
 <body>
   <div>
     {% for error in validation_errors %}
-    <div class="alert alert-danger">{{error}}</div>
+    <div class="alert alert-danger">
+      {{error}}
+    </div>
     {% endfor %}
+
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}
-    <div class="alert alert-info"> {{message}} </div>
+    <div class="alert alert-info">
+      {{message}}
+    </div>
     {% endfor %}
     {% endif %}
     {% endwith %}
+
   </div>
 
   <div class="container-fluid">
@@ -41,6 +47,8 @@
       </div>
     </div>
     Hi {{ current_user.full_name }}! You are logged in!
+    <br>
+    <a href="{{ url_for('home') }}" class="btn btn-primary">Home</a>
     {% endif %}
     {% block content %}
     {% endblock %}

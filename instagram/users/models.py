@@ -13,8 +13,8 @@ class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.Text, nullable=False)
-    email = db.Column(db.Text, nullable=False, unique=True)
-    username = db.Column(db.String(50), nullable=False, unique=True)
+    email = db.Column(db.Text, nullable=False)
+    username = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(255), nullable=False, server_default='')
     profile_picture_name = db.Column(
         db.Text, nullable=False, server_default='generic_profile_pic.png')
@@ -52,19 +52,13 @@ class User(db.Model, UserMixin):
         if len(username) < 5 or len(username) > 20:
             self.validation_errors.append(
                 'Username must be between 5 and 20 characters')
-
         return username
 
     @validates('password')
     @validation_preparation
     def validate_password(self, key, password):
-        print("------------------->")
         if not password:
             self.validation_errors.append('Password not provided')
-
-        if len(password) < 8:
-            self.validation_errors.append(
-                'Password must be between 8 and 50 characters')
 
         return password
 

@@ -2,7 +2,7 @@ from werkzeug.security import generate_password_hash
 from flask import Blueprint, render_template, request, redirect, url_for, flash, escape, sessions
 from instagram.users.models import User
 from instagram.users.forms import SignupForm, EditForm, DeleteForm
-from instagram import db, login_manager
+from instagram import db, login_manager, super_admins
 from flask_login import login_user, logout_user, login_required, login_url, current_user
 
 users_blueprint = Blueprint(
@@ -46,7 +46,7 @@ def profile():
 @users_blueprint.route("/<id>", methods=["GET"])
 @login_required
 def show(id):
-    if current_user.username in ('ahmedramzy160', 'josh777') or int(id) == current_user.id:
+    if current_user.username in super_admins or int(id) == current_user.id:
         user = User.query.get(id)
         return render_template('users/show.html', user=user)
     else:
@@ -57,7 +57,7 @@ def show(id):
 @users_blueprint.route("/", methods=["GET"])
 @login_required
 def index():
-    if current_user.username in ('ahmedramzy160', 'josh777'):
+    if current_user.username in super_admins:
         users = User.query.all()
         return render_template('users/index.html', users=users)
     flash('UNAUTHORIZED!!')
@@ -73,7 +73,7 @@ def settings(id):
 @users_blueprint.route("/<id>/edit", methods=["GET", "POST"])
 @login_required
 def update_or_destroy(id):
-    if current_user.username in ('ahmedramzy160', 'josh777') or int(id) == current_user.id:
+    if current_user.username in super_admins or int(id) == current_user.id:
         if request.args.get('_method') == 'PUT':
             form = EditForm()
             return render_template('users/edit.html', User=User, id=id, form=form)
@@ -86,14 +86,16 @@ def update_or_destroy(id):
                 editted_user.username = form.username.data
                 editted_user.password = generate_password_hash(
                     form.password.data)
-                db.session.add(editted_user)
-                db.session.commit()
-                flash('User details updated successfully.')
-                return redirect(url_for('users.profile'))
+                if len(editted_user.validation_errors) == 0:
+                    db.session.add(editted_user)
+                    db.session.commit()
+                    flash('User details updated successfully.')
+                    return redirect(url_for('users.profile'))
+                return render_template('users/edit.html', User=User, id=id, form=form, validation_errors=editted_user.validation_errors)
             return render_template('users/edit.html', User=User, id=id, form=form)
         if request.args.get('_method') == 'DELETE':
             form = DeleteForm()
-            return render_template('users/delete.html', id=id, form=form)
+            return render_template('users/delete.html', id=id, form=form, User=User)
         if request.form.get('_method') == 'DELETE':
             form = DeleteForm()
             if form.validate_on_submit():
@@ -104,7 +106,7 @@ def update_or_destroy(id):
                 db.session.commit()
                 flash('User deleted successfully.')
                 return redirect(url_for('home'))
-            return render_template('users/delete.html', id=id, form=form)
+            return render_template('users/delete.html', id=id, form=form, User=User)
     else:
         flash('UNAUTHORIZED!!')
         return render_template('users/profile.html')
