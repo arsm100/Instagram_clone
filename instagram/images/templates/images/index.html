@@ -1,0 +1,35 @@
+{% extends "_base.html" %}
+{% block title %}
+All the images!
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="">
+<h1>Image List!</h1>
+<a href="{{ url_for('users.index') }}" class="btn btn-primary">Users List</a>
+
+<table class="table-striped table-bordered" width=100%>
+    <tr>
+        <th>ID</th>
+        <th>Image Name</th>
+        <th>User ID</th>
+        <th>Image</th>
+        <th>DELETE!</th>
+    </tr>
+    {% for image in images %}
+    <tr>
+        <td>{{image.id}}</td>
+        <td>{{image.image_name}}</td>
+        <td>{{image.user_id}}</td>
+        <td><img src="{{S3_LOCATION}}{{image.image_name}}" alt="image" width="200px"></td>
+        <td>
+            <form action="\" method="GET">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-primary">DELETE</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </th>
+
+</table>
+{% endblock %}

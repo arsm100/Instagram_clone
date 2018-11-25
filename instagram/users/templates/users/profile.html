@@ -6,7 +6,10 @@ User Profile!
 <h1>User Profile</h1>
 <h2>Welcome to your private profile, {{current_user.full_name}}!</h2>
 <div class="container" style="">
-    <a href="{{ url_for('images.upload', id = current_user.id) }}" class="btn btn-primary">Edit your profile picture</a>
+    <a href="{{ url_for('images.upload', id = current_user.id, gallery=True) }}" class="btn btn-primary">Add images to
+        gallery</a>
+    <a href="{{ url_for('images.upload', id = current_user.id, gallery=False) }}" class="btn btn-primary">Edit your
+        profile picture</a>
     <a href="{{ url_for('users.index') }}" class="btn btn-primary">Check out all the users!</a>
     <form action="{{ url_for('users.update_or_destroy',id=current_user.id) }}" method="GET">
         <input type="hidden" name="_method" value="PUT">

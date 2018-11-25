@@ -1,5 +1,23 @@
-from instagram.helpers import s3
 from flask import flash, redirect, url_for
+from instagram.helpers import s3
+from instagram.users.models import User, UserMixin, db, S3_LOCATION, hybrid_property
+
+
+class Image(db.Model, UserMixin):
+
+    __tablename__ = 'images'
+
+    id = db.Column(db.Integer, primary_key=True)
+    image_name = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+    def __init__(self, image_name, user_id):
+        self.image_name = image_name
+        self.user_id = user_id
+
+    @hybrid_property
+    def images_url(self):
+        return f'{S3_LOCATION}{self.image_name}'
 
 
 def upload_file_to_s3(file, bucket_name, acl="public-read"):

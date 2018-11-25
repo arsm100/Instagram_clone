@@ -2,7 +2,7 @@ import re
 from instagram import db, S3_LOCATION
 from flask_login import UserMixin
 from flask import url_for
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from instagram.helpers import validation_preparation
 
@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255), nullable=False, server_default='')
     profile_picture_name = db.Column(
         db.Text, nullable=False, server_default='generic_profile_pic.png')
+    images = db.relationship("Image", backref="users", lazy=True)
 
     def __init__(self, full_name, email, username, password):
         self.full_name = full_name

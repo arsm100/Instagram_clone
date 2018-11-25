@@ -3,7 +3,7 @@ from flask import Flask, request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import login_manager, LoginManager
-from flask_wtf.csrf import CsrfProtect
+from flask_wtf import CSRFProtect
 
 ######################################
 # SET UP OUR POSTGRESQL DATABASE #####
@@ -39,7 +39,7 @@ app.config['S3_SECRET'] = S3_SECRET
 
 # CSRF setup
 app.config['CSRF_ENABLED'] = True
-csrf = CsrfProtect(app)
+csrf = CSRFProtect(app)
 
 # Login manager setup
 login_manager = LoginManager()
@@ -70,17 +70,16 @@ class TestingConfig(Config):
 
 app.config.from_object(DevelopmentConfig)
 
-#SuperAdmins
+# SuperAdmins
 super_admins = {'ahmedramzy160', 'Josh777'}
 
 # Blue Print
-from instagram.users.views import users_blueprint
-from instagram.sessions.views import sessions_blueprint
 from instagram.images.views import images_blueprint
+from instagram.sessions.views import sessions_blueprint
+from instagram.users.views import users_blueprint
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix="/")
 app.register_blueprint(images_blueprint, url_prefix="/images")
-
 
 
 # Home Page
