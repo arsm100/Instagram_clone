@@ -2,9 +2,24 @@
 {% block title %}
 User Profile!
 {% endblock %}
+
+{% block custom_css %}
+<link rel="stylesheet" href="./../../../static/css/lightbox.css">
+{% endblock %}
+
 {% block content %}
-<h1>User Profile</h1>
-<h2>Welcome to your private profile, {{current_user.full_name}}!</h2>
+<h1>{{User.query.get(id).username}}'s Profile</h1>
+
+{% if id==current_user.id %}
+<h2>Welcome to your profile, {{current_user.full_name}}!</h2>
+{% elif id != current_user.id %}
+<h2>Welcome to {{User.query.get(id).full_name}}'s profile!</h2>
+{% endif %}
+
+
+
+
+
 <div class="container" style="">
     <a href="{{ url_for('images.upload', id = current_user.id, gallery=True) }}" class="btn btn-primary">Add images to
         gallery</a>
@@ -20,5 +35,22 @@ User Profile!
         <input type="hidden" name="_method" value="DELETE">
         <button type="submit" class="alert alert-danger btn btn-primary">DELETE YOUR ACCOUNT</button>
     </form>
+    <hr>
+    <h2 style="clear: both;">{{User.query.get(id).username}}'s Gallery!</h2>
+    <div class="image-row">
+        <div class="image-set">
+            {% for image in User.query.get(id).images %}
+            <a style="display: inline-block; margin:5px" class="image-link" href="{{S3_LOCATION}}{{image.image_name}}"
+                data-lightbox="image-set" data-title="{{image.image_caption|default('')}}">
+                <img class="gallery-image" src="{{S3_LOCATION}}{{image.image_name}}" width=200px height=200px>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
 </div>
+
+{% endblock %}
+
+{% block custom_js %}
+<script src="./../../../static/js/lightbox.js"></script>
 {% endblock %}

@@ -10,9 +10,9 @@
   </title>
   <!-- Bootstrap 4.1.1 -->
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <link rel="stylesheet" href="./../../../static/style.css">
+  <link rel="stylesheet" href="./../../../static/css/style.css">
+  {% block custom_css %}
+  {% endblock %}
 </head>
 
 <body>
@@ -49,10 +49,15 @@
     Hi {{ current_user.full_name }}! You are logged in!
     <br>
     <a href="{{ url_for('home') }}" class="btn btn-primary">Home</a>
-    {% endif %}
-    {% block content %}
-    {% endblock %}
   </div>
+  {% endif %}
+  {% block content %}
+  {% endblock %}
+
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  {% block custom_js %}
+  {% endblock %}
 </body>
 
 </html>

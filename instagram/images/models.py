@@ -10,10 +10,12 @@ class Image(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     image_name = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    image_caption = db.Column(db.Text, nullable=True)
 
-    def __init__(self, image_name, user_id):
+    def __init__(self, image_name, user_id, image_caption=None):
         self.image_name = image_name
         self.user_id = user_id
+        self.image_caption = image_caption
 
     @hybrid_property
     def images_url(self):

@@ -1,9 +1,14 @@
  html,body{
     height: 100%;
+    line-height: 1.4em;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+
 }
  .container{
-    height: 100%;
-    align-content: center;
+    margin: inherit
  }
  table {
     text-align: center;

@@ -21,15 +21,16 @@ def upload(id, gallery):
 
 @images_blueprint.route("<id>/new", methods=['POST'])
 def upload_image(id):
-    if current_user.username in ('ahmedramzy160', 'josh777') or int(id) == current_user.id:
+    if current_user.username in super_admins or int(id) == current_user.id:
 
             # check there is a file
         if "user_photo" not in request.files:
             flash("No photo was uploaded")
             return redirect(url_for('images.upload', id=current_user.id))
 
-            # grab the photo
+            # grab the photo and caption
         file = request.files["user_photo"]
+        caption = request.form["image_caption"]
 
         # check there is a name
         if file.filename == "":
@@ -41,11 +42,11 @@ def upload_image(id):
             file.filename = secure_filename(file.filename)
             output = upload_file_to_s3(file, S3_BUCKET)
             if request.form.get('_folder') == 'True':
-                new_image = Image(str(output), id)
+                new_image = Image(str(output), id, caption)
                 db.session.add(new_image)
                 db.session.commit()
                 flash('image added to gallery successfully.')
-                return redirect(url_for('users.profile'))
+                return redirect(url_for('users.profile', id=current_user.id))
 
             elif request.form.get('_folder') == 'False':
                 editted_user = User.query.get(current_user.id)
@@ -53,14 +54,14 @@ def upload_image(id):
                 db.session.add(editted_user)
                 db.session.commit()
                 flash('Profile picture updated successfully.')
-                return redirect(url_for('users.profile'))
+                return redirect(url_for('users.profile', id=current_user.id))
 
         else:
             flash('Please upload a valid photo file!')
             return redirect(url_for('images.upload', id=current_user.id))
     else:
         flash('UNAUTHORIZED!!')
-        return render_template('users/profile.html')
+        return render_template('users/profile.html', id=current_user.id)
 
 
 @images_blueprint.route("/", methods=["GET"])
@@ -70,4 +71,4 @@ def index():
         images = Image.query.all()
         return render_template('images/index.html', S3_LOCATION=S3_LOCATION, images=images)
     flash('UNAUTHORIZED!!')
-    return render_template('users/profile.html')
+    return render_template('users/profile.html', id=current_user.id)

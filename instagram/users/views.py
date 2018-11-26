@@ -1,8 +1,8 @@
-from werkzeug.security import generate_password_hash
+# from flask_mail import Mail, Message
 from flask import Blueprint, render_template, request, redirect, url_for, flash, escape, sessions
 from instagram.users.models import User
 from instagram.users.forms import SignupForm, EditForm, DeleteForm
-from instagram import db, login_manager, super_admins
+from instagram import db, login_manager, super_admins, S3_LOCATION
 from flask_login import login_user, logout_user, login_required, login_url, current_user
 
 users_blueprint = Blueprint(
@@ -25,22 +25,21 @@ def create():
     else:
         form = SignupForm()
         if form.validate_on_submit():
-            hashed_password = generate_password_hash(form.password.data)
             new_user = User(form.full_name.data, form.email.data,
-                            form.username.data, hashed_password)
+                            form.username.data, form.password.data)
             if len(new_user.validation_errors) == 0:
                 db.session.add(new_user)
                 db.session.commit()
                 login_user(new_user)
-                return redirect(url_for('users.profile'))
+                return redirect(url_for('users.profile', User=User, id=current_user.id))
             return render_template('users/new.html', form=form, validation_errors=new_user.validation_errors)
         return render_template('users/new.html', form=form)
 
 
-@users_blueprint.route("/profile")
+@users_blueprint.route("<id>/profile")
 @login_required
-def profile():
-    return render_template('users/profile.html')
+def profile(id):
+    return render_template('users/profile.html', User=User, id=int(id), S3_LOCATION=S3_LOCATION)
 
 
 @users_blueprint.route("/<id>", methods=["GET"])
@@ -51,7 +50,7 @@ def show(id):
         return render_template('users/show.html', user=user)
     else:
         flash('UNAUTHORIZED!!')
-        return render_template('users/profile.html')
+        return render_template('users/profile.html', id=id)
 
 
 @users_blueprint.route("/", methods=["GET"])
@@ -61,7 +60,7 @@ def index():
         users = User.query.all()
         return render_template('users/index.html', users=users)
     flash('UNAUTHORIZED!!')
-    return render_template('users/profile.html')
+    return render_template('users/profile.html', id=current_user.id)
 
 
 @users_blueprint.route("/<id>/settings")
@@ -84,13 +83,12 @@ def update_or_destroy(id):
                 editted_user.full_name = form.full_name.data
                 editted_user.email = form.email.data
                 editted_user.username = form.username.data
-                editted_user.password = generate_password_hash(
-                    form.password.data)
+                editted_user.password = form.password.data
                 if len(editted_user.validation_errors) == 0:
                     db.session.add(editted_user)
                     db.session.commit()
                     flash('User details updated successfully.')
-                    return redirect(url_for('users.profile'))
+                    return redirect(url_for('users.profile', id=id))
                 return render_template('users/edit.html', User=User, id=id, form=form, validation_errors=editted_user.validation_errors)
             return render_template('users/edit.html', User=User, id=id, form=form)
         if request.args.get('_method') == 'DELETE':
@@ -109,4 +107,4 @@ def update_or_destroy(id):
             return render_template('users/delete.html', id=id, form=form, User=User)
     else:
         flash('UNAUTHORIZED!!')
-        return render_template('users/profile.html')
+        return render_template('users/profile.html', id=id)

@@ -1,7 +1,7 @@
 from flask import Flask, Blueprint, render_template, request, redirect, url_for, flash, escape, sessions
 from instagram.sessions.forms import LoginForm
 from instagram.sessions.models import authenticate
-from flask_login import login_user, logout_user, login_url, login_required
+from flask_login import login_user, logout_user, login_url, login_required, current_user
 
 
 sessions_blueprint = Blueprint(
@@ -18,7 +18,7 @@ def login():
         login_user(user)
         flash('Logged in successfully.')
         next = request.args.get('next')
-        return redirect(next or url_for('users.profile'))
+        return redirect(next or url_for('users.profile', id=current_user.id))
     return render_template('sessions/new.html', form=form)
 
 

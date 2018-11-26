@@ -13,6 +13,7 @@ All the images!
         <th>Image Name</th>
         <th>User ID</th>
         <th>Image</th>
+        <th>Caption</th>
         <th>DELETE!</th>
     </tr>
     {% for image in images %}
@@ -21,6 +22,7 @@ All the images!
         <td>{{image.image_name}}</td>
         <td>{{image.user_id}}</td>
         <td><img src="{{S3_LOCATION}}{{image.image_name}}" alt="image" width="200px"></td>
+        <td>{{image.image_caption}}</td>
         <td>
             <form action="\" method="GET">
                 <input type="hidden" name="_method" value="DELETE">

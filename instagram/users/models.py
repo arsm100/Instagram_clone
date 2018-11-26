@@ -5,6 +5,7 @@ from flask import url_for
 from sqlalchemy.orm import validates, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 from instagram.helpers import validation_preparation
+from werkzeug.security import generate_password_hash
 
 
 class User(db.Model, UserMixin):
@@ -61,7 +62,11 @@ class User(db.Model, UserMixin):
         if not password:
             self.validation_errors.append('Password not provided')
 
-        return password
+        if len(password) < 8 or len(password) > 50:
+            self.validation_errors.append(
+                'Password must be between 8 and 50 characters')
+
+        return generate_password_hash(password)
 
     @hybrid_property
     def image_url(self):
