@@ -3,9 +3,11 @@
 DELETE ACCOUNT!
 {% endblock %}
 {% block content %}
+
 <form action="{{ url_for('users.update_or_destroy',id=id) }}" method="POST">
   <input type="hidden" name="_method" value="DELETE">
   {{ form.csrf_token }}
+
 
   <button type="submit" class="btn btn-primary">COFIRM PERMENANT ACCOUNT REMOVAL OF {{User.query.get(id).username}}</button>
 </form>

@@ -1,0 +1,19 @@
+{% extends "_base.html" %}
+{% block title %}
+DELETE PHOTO!
+{% endblock %}
+{% block content %}
+
+<form action="{{ url_for('images.update_or_destroy',id=id) }}" method="POST">
+    <input type="hidden" name="_method" value="DELETE">
+    {{ form.csrf_token }}
+
+    <div class="container">
+        <p>Are you sure you want to permenantly delete this photo?</p>
+        <img class="img-thumbnail" src="{{S3_LOCATION}}{{Image.query.get(id).image_name}}" alt="photo to be deleted">
+        <hr>
+        <button type="submit" class="btn btn-primary">DELETE</button>
+    </div>
+</form>
+
+{% endblock %}

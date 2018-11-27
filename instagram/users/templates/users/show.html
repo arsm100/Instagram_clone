@@ -23,16 +23,12 @@ One user!
         <td>{{user.password}}</td>
         <td>{{user.profile_picture_name}}</td>
         <td>
-            <form action="{{ url_for('users.update_or_destroy',id=user.id) }}" method="GET">
-                <input type="hidden" name="_method" value="PUT">
-                <button type="submit" class="btn btn-primary">Edit</button>
-            </form>
+            <a href="{{ url_for('users.edit', id = user.id) }}" class="btn btn-primary">Edit</a>
+
         </td>
         <td>
-            <form action="{{ url_for('users.update_or_destroy',id=user.id) }}" method="GET">
-                <input type="hidden" name="_method" value="DELETE">
-                <button type="submit" class="btn btn-primary">DELETE</button>
-            </form>
+            <a href="{{ url_for('users.delete', id = user.id) }}" class="btn btn-primary">DELETE
+            </a>
         </td>
     </tr>
     </th>

@@ -1,6 +1,7 @@
 from flask import flash, redirect, url_for
 from instagram.helpers import s3
 from instagram.users.models import User, UserMixin, db, S3_LOCATION, hybrid_property
+from flask_login import current_user
 
 
 class Image(db.Model, UserMixin):
@@ -13,8 +14,10 @@ class Image(db.Model, UserMixin):
     image_caption = db.Column(db.Text, nullable=True)
 
     def __init__(self, image_name, user_id, image_caption=None):
-        self.image_name = image_name
         self.user_id = user_id
+        import pdb
+        pdb.set_trace()
+        self.image_name = f'{self.user_id}.{self.id}.{image_name}'
         self.image_caption = image_caption
 
     @hybrid_property
@@ -40,7 +43,6 @@ def upload_file_to_s3(file, bucket_name, acl="public-read"):
 
     except Exception as e:
         # This is to catch all exception
-        flash("Something Happened: ", e)
-        return redirect(url_for('images.upload'))
+        return redirect(url_for('users.profile', id=current_user.id))
 
     return file.filename

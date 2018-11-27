@@ -1,8 +1,8 @@
 import os
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template,redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from flask_login import login_manager, LoginManager
+from flask_login import login_manager, LoginManager, current_user
 from flask_wtf import CSRFProtect
 
 ######################################
@@ -85,4 +85,7 @@ app.register_blueprint(images_blueprint, url_prefix="/images")
 # Home Page
 @app.route("/")
 def home():
-    return render_template('home.html')
+    if current_user.is_authenticated:
+        return redirect(url_for('users.profile', id=current_user.id))
+    else:
+        return render_template('home.html')

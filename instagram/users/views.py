@@ -1,9 +1,11 @@
 # from flask_mail import Mail, Message
 from flask import Blueprint, render_template, request, redirect, url_for, flash, escape, sessions
 from instagram.users.models import User
+from instagram.images.models import Image
 from instagram.users.forms import SignupForm, EditForm, DeleteForm
 from instagram import db, login_manager, super_admins, S3_LOCATION
 from flask_login import login_user, logout_user, login_required, login_url, current_user
+from instagram.helpers import delete_photo
 
 users_blueprint = Blueprint(
     'users', __name__, template_folder='templates/')
@@ -69,42 +71,63 @@ def settings(id):
     return f'<h1>{id} Settings Page</h1>'
 
 
-@users_blueprint.route("/<id>/edit", methods=["GET", "POST"])
+@users_blueprint.route("/<id>/edit", methods=["GET"])
 @login_required
-def update_or_destroy(id):
+def edit(id):
+    editted_user = editted_user
     if current_user.username in super_admins or int(id) == current_user.id:
-        if request.args.get('_method') == 'PUT':
-            form = EditForm()
-            return render_template('users/edit.html', User=User, id=id, form=form)
-        if request.form.get('_method') == 'PUT':
-            form = EditForm()
-            if form.validate_on_submit():
-                editted_user = User.query.get(id)
-                editted_user.full_name = form.full_name.data
-                editted_user.email = form.email.data
-                editted_user.username = form.username.data
-                editted_user.password = form.password.data
-                if len(editted_user.validation_errors) == 0:
-                    db.session.add(editted_user)
-                    db.session.commit()
-                    flash('User details updated successfully.')
-                    return redirect(url_for('users.profile', id=id))
-                return render_template('users/edit.html', User=User, id=id, form=form, validation_errors=editted_user.validation_errors)
-            return render_template('users/edit.html', User=User, id=id, form=form)
-        if request.args.get('_method') == 'DELETE':
-            form = DeleteForm()
-            return render_template('users/delete.html', id=id, form=form, User=User)
-        if request.form.get('_method') == 'DELETE':
-            form = DeleteForm()
-            if form.validate_on_submit():
-                user = User.query.get(id)
-                if int(id) == current_user.id:
-                    logout_user()
-                db.session.delete(user)
-                db.session.commit()
-                flash('User deleted successfully.')
-                return redirect(url_for('home'))
-            return render_template('users/delete.html', id=id, form=form, User=User)
+        form = EditForm()
+        form.full_name.data = editted_user.full_name
+        form.email.data = editted_user.email
+        form.username.data = editted_user.username
+        form.password.data = editted_user.password
+        return render_template('users/edit.html', id=id, form=form)
     else:
         flash('UNAUTHORIZED!!')
         return render_template('users/profile.html', id=id)
+
+
+@users_blueprint.route("/<id>/delete", methods=["GET"])
+@login_required
+def delete(id):
+    if current_user.username in super_admins or int(id) == current_user.id:
+        form = DeleteForm()
+        return render_template('users/delete.html', id=id, form=form, User=User)
+    else:
+        flash('UNAUTHORIZED!!')
+        return render_template('users/profile.html', id=id)
+
+
+@users_blueprint.route("/<id>/update", methods=["POST"])
+@login_required
+def update_or_destroy(id):
+    if request.form.get('_method') == 'PUT':
+        form = EditForm()
+        if form.validate_on_submit():
+            editted_user = User.query.get(id)
+            editted_user.full_name = form.full_name.data
+            editted_user.email = form.email.data
+            editted_user.username = form.username.data
+            editted_user.password = form.password.data
+            if len(editted_user.validation_errors) == 0:
+                db.session.add(editted_user)
+                db.session.commit()
+                flash('User details updated successfully.')
+                return redirect(url_for('users.profile', id=id))
+            return render_template('users/edit.html', id=id, form=form, validation_errors=editted_user.validation_errors)
+        return render_template('users/edit.html', id=id, form=form)
+    if request.form.get('_method') == 'DELETE':
+        form = DeleteForm()
+        if form.validate_on_submit():
+            user = User.query.get(id)
+            if int(id) == current_user.id:
+                logout_user()
+            for image in user.images:
+                delete_photo(image.image_name)
+                db.session.delete(image)
+                db.session.commit()
+            db.session.delete(user)
+            db.session.commit()
+            flash('User deleted successfully.')
+            return redirect(url_for('home'))
+        return render_template('users/delete.html', id=id, form=form, User=User)

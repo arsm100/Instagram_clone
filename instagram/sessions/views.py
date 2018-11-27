@@ -14,7 +14,7 @@ def login():
     if form.validate_on_submit():
         user = authenticate(form.username.data, form.password.data)
         if user is None:
-            return redirect(url_for('sessions.login'))
+            return render_template('sessions/new.html', form=form)
         login_user(user)
         flash('Logged in successfully.')
         next = request.args.get('next')

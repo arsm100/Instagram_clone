@@ -3,8 +3,16 @@ import botocore
 from instagram import S3_KEY, S3_SECRET, S3_BUCKET
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+
+
 s3 = boto3.client('s3', aws_access_key_id=S3_KEY,
                   aws_secret_access_key=S3_SECRET)
+
+
+def delete_photo(image_name):
+    s3.delete_object(
+        Bucket=S3_BUCKET,
+        Key=image_name)
 
 
 def validation_preparation(func):

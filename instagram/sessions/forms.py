@@ -1,4 +1,4 @@
-from flask_wtf import FlaskForm, Form
+from flask_wtf import FlaskForm
 from flask_wtf.csrf import CsrfProtect
 from wtforms import StringField, PasswordField, SubmitField, validators
 

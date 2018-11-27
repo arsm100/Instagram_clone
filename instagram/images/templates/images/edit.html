@@ -1,0 +1,26 @@
+{% extends "_base.html" %}
+{% block title %}
+Photo Caption Editor!
+{% endblock %}
+{% block content %}
+
+
+<h1>Edit the caption</h1>
+<form action="{{ url_for('images.update_or_destroy',id=id, next = request.args.get('next')) }}" method="POST">
+    <input type="hidden" name="_method" value="PUT">
+    {{ form.csrf_token }}
+
+    <div class="container">
+        <p>Are you sure you want to change the caption of this photo?</p>
+        <img class="img-thumbnail" src="{{S3_LOCATION}}{{Image.query.get(id).image_name}}" alt="caption to be changed">
+        <hr>
+        <div class="form-group">
+            <label for="image_caption">New Caption:</label>
+            <textarea rows='5' cols='100' name='image_caption' class="form-control">{{Image.query.get(id).image_caption}}</textarea>
+        </div>
+        {{ form.submit (class= 'btn btn-primary')}}
+    </div>
+
+</form>
+
+{% endblock %}

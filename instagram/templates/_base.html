@@ -17,6 +17,8 @@
 
 <body>
   <div>
+
+
     {% for error in validation_errors %}
     <div class="alert alert-danger">
       {{error}}
@@ -35,24 +37,33 @@
 
   </div>
 
-  <div class="container-fluid">
+  <div class="container">
     {% if current_user.is_authenticated %}
     <div class="container">
       <div class="d-flex justify-content-left h-100">
         <div class="image_outer_container">
           <div class="image_inner_container">
-            <img class="img-rounded" src="{{current_user.image_url}}" alt="profile picture">
+            <a href="{{ url_for('users.profile', id = current_user.id) }}"><img class="img-rounded" src="{{current_user.image_url}}"
+                alt="profile picture">
+            </a>
           </div>
         </div>
       </div>
     </div>
     Hi {{ current_user.full_name }}! You are logged in!
-    <br>
-    <a href="{{ url_for('home') }}" class="btn btn-primary">Home</a>
   </div>
   {% endif %}
   {% block content %}
   {% endblock %}
+
+  {% if current_user.username in ['ahmedramzy160','josh777'] %}
+  <br>
+  <footer class="text-danger">
+    <strong>SUPER ADMIN ROLE ACTIVE! </strong>
+    <a href="{{ url_for('users.index') }}" class="btn btn-primary">All Users!</a>
+    <a href="{{ url_for('images.index') }}" class="btn btn-primary">All Images!</a>
+  </footer>
+  {% endif %}
 
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
