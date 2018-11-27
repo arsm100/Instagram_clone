@@ -14,12 +14,13 @@ class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.Text, nullable=False)
-    email = db.Column(db.Text, nullable=False)
-    username = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.Text, nullable=False, index=True)
+    username = db.Column(db.String(50), nullable=False, index=True)
     password = db.Column(db.String(255), nullable=False, server_default='')
     profile_picture_name = db.Column(
         db.Text, nullable=False, server_default='generic_profile_pic.png')
     images = db.relationship("Image", backref="users", lazy=True)
+    is_private = db.Column(db.Boolean, nullable=False, server_default='False')
 
     def __init__(self, full_name, email, username, password):
         self.full_name = full_name

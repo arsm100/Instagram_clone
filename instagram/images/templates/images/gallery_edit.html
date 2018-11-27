@@ -1,0 +1,43 @@
+{% extends "_base.html" %}
+{% block title %}
+Edit Gallery!
+{% endblock %}
+
+{% block custom_css %}
+<link rel="stylesheet" href="./../../../static/css/lightbox.css">
+{% endblock %}
+
+{% block content %}
+<hr>
+
+<h2>Welcome to your gallery editor, {{current_user.full_name}}!</h2>
+
+<div class="container">
+    <hr>
+    <h2 style="clear: both;">{{User.query.get(id).username}}'s Gallery!</h2>
+    <a href="{{ url_for('images.upload', id = current_user.id, gallery=True) }}" class="btn btn-primary">Add images to
+        your gallery</a>
+
+    <div class="image-row">
+        <div class="image-set">
+            {% for image in User.query.get(id).images %}
+            <div style="display: inline-block; margin:5px">
+                <a class="image-link" href="{{S3_LOCATION}}{{image.image_name}}" data-lightbox="image-set" data-title="{{image.image_caption|default('')}}">
+                    <img style="margin-bottom:5px" class="gallery-image" src="{{S3_LOCATION}}{{image.image_name}}"
+                        width=200px height=200px>
+                </a>
+                <br>
+                <a href="{{ url_for('images.edit', id = image.id) }}" class="btn btn-primary">Edit</a>
+                <a href="{{ url_for('images.delete', id = image.id) }}" class="btn btn-primary">DELETE
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block custom_js %}
+<script src="./../../../static/js/lightbox.js"></script>
+{% endblock %}

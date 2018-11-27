@@ -126,3 +126,13 @@ def update_or_destroy(id):
             flash('Image deleted successfully.')
             return redirect(url_for('home'))
         return render_template('images/delete.html', id=id, form=form, Image=Image, S3_LOCATION=S3_LOCATION)
+
+
+@images_blueprint.route("/<id>/gallery_edit", methods=["GET"])
+@login_required
+def gallery_edit(id):
+    if current_user.username in super_admins or int(id) == current_user.id:
+        return render_template('images/gallery_edit.html', id=id, User=User, S3_LOCATION=S3_LOCATION)
+    else:
+        flash('UNAUTHORIZED!!')
+        return render_template('users/profile.html', id=id)

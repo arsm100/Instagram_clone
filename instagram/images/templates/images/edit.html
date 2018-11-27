@@ -12,7 +12,7 @@ Photo Caption Editor!
 
     <div class="container">
         <p>Are you sure you want to change the caption of this photo?</p>
-        <img class="img-thumbnail" src="{{S3_LOCATION}}{{Image.query.get(id).image_name}}" alt="caption to be changed">
+        <img class="img-thumbnail" width="50%" src="{{S3_LOCATION}}{{Image.query.get(id).image_name}}" alt="caption to be changed">
         <hr>
         <div class="form-group">
             <label for="image_caption">New Caption:</label>

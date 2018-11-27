@@ -71,7 +71,7 @@ class TestingConfig(Config):
 app.config.from_object(DevelopmentConfig)
 
 # SuperAdmins
-super_admins = {'ahmedramzy160', 'Josh777'}
+super_admins = {'ahmedramzy160', 'josh777'}
 
 # Blue Print
 from instagram.images.views import images_blueprint

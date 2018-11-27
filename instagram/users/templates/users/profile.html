@@ -8,21 +8,14 @@ User Profile!
 {% endblock %}
 
 {% block content %}
-
+<hr>
 <h1>{{User.query.get(id).username}}'s Profile</h1>
-
+<hr>
+<img width=50% src="{{S3_LOCATION}}{{User.query.get(id).profile_picture_name}}" alt="profile picture" class="img-thumbnail">
+<hr>
 {% if id==current_user.id %}
 <h2>Welcome to your profile, {{current_user.full_name}}!</h2>
 
-<a href="{{ url_for('images.upload', id = current_user.id, gallery=True) }}" class="btn btn-primary">Add images to your
-    gallery</a>
-<a href="{{ url_for('images.upload', id = current_user.id, gallery=False) }}" class="btn btn-primary">Edit your
-    profile picture</a>
-<a href="{{ url_for('users.edit', id = current_user.id) }}" class="btn btn-primary">Edit your
-    details</a>
-<a href="{{ url_for('sessions.logout') }}" class="btn btn-primary">Logout</a>
-<a href="{{ url_for('users.delete', id = current_user.id) }}" class="alert alert-danger btn btn-primary">DELETE YOUR
-    ACCOUNT</a>
 
 {% elif id != current_user.id %}
 <h2>Welcome to {{User.query.get(id).full_name}}'s profile!</h2>
@@ -35,6 +28,12 @@ User Profile!
 <div class="container">
     <hr>
     <h2 style="clear: both;">{{User.query.get(id).username}}'s Gallery!</h2>
+    {% if id==current_user.id %}
+    <a href="{{ url_for('images.upload', id = current_user.id, gallery=True) }}" class="btn btn-primary">Add images to
+        your gallery</a>
+    <a href="{{ url_for('images.gallery_edit', id = current_user.id) }}" class="btn btn-primary">Edit your gallery</a>
+    {% endif %}
+
     <div class="image-row">
         <div class="image-set">
             {% for image in User.query.get(id).images %}

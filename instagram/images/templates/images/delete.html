@@ -10,7 +10,7 @@ DELETE PHOTO!
 
     <div class="container">
         <p>Are you sure you want to permenantly delete this photo?</p>
-        <img class="img-thumbnail" src="{{S3_LOCATION}}{{Image.query.get(id).image_name}}" alt="photo to be deleted">
+        <img width="50%" class="img-thumbnail" src="{{S3_LOCATION}}{{Image.query.get(id).image_name}}" alt="photo to be deleted">
         <hr>
         <button type="submit" class="btn btn-primary">DELETE</button>
     </div>

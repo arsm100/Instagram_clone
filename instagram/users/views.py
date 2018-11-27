@@ -74,7 +74,7 @@ def settings(id):
 @users_blueprint.route("/<id>/edit", methods=["GET"])
 @login_required
 def edit(id):
-    editted_user = editted_user
+    editted_user = User.query.get(id)
     if current_user.username in super_admins or int(id) == current_user.id:
         form = EditForm()
         form.full_name.data = editted_user.full_name
