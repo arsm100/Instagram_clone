@@ -21,3 +21,11 @@ class EditForm(FlaskForm):
 
 class DeleteForm(FlaskForm):
     submit = SubmitField('Submit')
+
+
+class SearchForm(FlaskForm):
+    query = StringField('Search')
+    submit = SubmitField('Submit')
+
+    class Meta:
+        cstf = False

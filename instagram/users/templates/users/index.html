@@ -14,10 +14,9 @@ All the users!
         <th>User Name</th>
         <th>Password</th>
         <th>Profile Pic</th>
-        <!-- <th>Super User</th> -->
+        <th>Private?</th>
         <th>Edit!</th>
         <th>DELETE!</th>
-        <th>Private?</th>
     </tr>
     {% for user in users %}
     <tr>
@@ -27,11 +26,8 @@ All the users!
         <td>{{user.username}}</td>
         <td>{{user.password}}</td>
         <td>{{user.profile_picture_name}}</td>
-        <!-- <td>
-            <label class="switch">
-                <input type="checkbox">
-                <span class="slider round"></span>
-            </label></td> -->
+        <td>
+            <a href="{{ url_for('users.change_privacy', id = user.id) }}" class="btn btn-primary">{{user.is_private}}</a></td>
         <td>
             <a href="{{ url_for('users.edit', id = user.id) }}" class="btn btn-primary">Edit</a>
         </td>
@@ -39,7 +35,6 @@ All the users!
             <a href="{{ url_for('users.delete', id = user.id) }}" class="btn btn-primary">DELETE
             </a>
         </td>
-        <td>{{user.is_private}}</td>
     </tr>
     {% endfor %}
     </th>
