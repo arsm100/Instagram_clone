@@ -17,6 +17,7 @@ All the users!
         <!-- <th>Super User</th> -->
         <th>Edit!</th>
         <th>DELETE!</th>
+        <th>Private?</th>
     </tr>
     {% for user in users %}
     <tr>
@@ -37,8 +38,8 @@ All the users!
         <td>
             <a href="{{ url_for('users.delete', id = user.id) }}" class="btn btn-primary">DELETE
             </a>
-
         </td>
+        <td>{{user.is_private}}</td>
     </tr>
     {% endfor %}
     </th>

@@ -2,10 +2,11 @@ import re
 from instagram import db, S3_LOCATION
 from flask_login import UserMixin
 from flask import url_for
-from sqlalchemy.orm import validates, relationship
+from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property
 from instagram.helpers import validation_preparation
 from werkzeug.security import generate_password_hash
+from instagram.donations.models import Donation
 
 
 class User(db.Model, UserMixin):
@@ -14,13 +15,18 @@ class User(db.Model, UserMixin):
 
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.Text, nullable=False)
-    email = db.Column(db.Text, nullable=False, index=True)
-    username = db.Column(db.String(50), nullable=False, index=True)
+    email = db.Column(db.Text, nullable=False, index=True, unique=True)
+    username = db.Column(db.String(50), nullable=False,
+                         index=True, unique=True)
     password = db.Column(db.String(255), nullable=False, server_default='')
     profile_picture_name = db.Column(
         db.Text, nullable=False, server_default='generic_profile_pic.png')
-    images = db.relationship("Image", backref="users", lazy=True)
     is_private = db.Column(db.Boolean, nullable=False, server_default='False')
+    images = db.relationship("Image", backref="users", lazy=True)
+    donations_out = db.relationship("Donation", foreign_keys=[
+                                    Donation.sender_id], back_populates="donor", lazy='dynamic')
+    donations_in = db.relationship("Donation", foreign_keys=[
+                                   Donation.receiver_id], back_populates="receiver", lazy='dynamic')
 
     def __init__(self, full_name, email, username, password):
         self.full_name = full_name

@@ -1,0 +1,33 @@
+{% extends "_base.html" %}
+{% block title %}
+All the donations!
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="">
+<h1>Donation List!</h1>
+
+<table class="table-striped table-bordered" width=100%>
+    <tr>
+        <th>ID</th>
+        <th>Sender</th>
+        <th>Receiver</th>
+        <th>Image Name</th>
+        <th style="width: 210px;">Image</th>
+        <th>Amount</th>
+        <th>Currency</th>
+    </tr>
+    {% for donation in donations %}
+    <tr>
+        <td>{{donation.id}}</td>
+        <td>{{donation.sender_id}}</td>
+        <td>{{donation.receiver_id}}</td>
+        <td>{{Image.query.get(donation.image_id).image_name}}</td>
+        <td><img src="{{S3_LOCATION}}{{Image.query.get(donation.image_id).image_name}}" alt="image" width="200px"></td>
+        <td>{{donation.amount}}</td>
+        <td>{{donation.currency}}</td>
+    </tr>
+    {% endfor %}
+    </th>
+
+</table>
+{% endblock %}

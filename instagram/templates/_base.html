@@ -11,7 +11,7 @@
   <!-- Bootstrap 4.1.1 -->
   <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
   <link rel="stylesheet" href="./../../../static/css/style.css">
-  {% block custom_css %}
+  {% block custom_head %}
   {% endblock %}
 </head>
 
@@ -61,6 +61,14 @@
               <a class="dropdown-item" href="{{ url_for('images.upload', id = current_user.id, gallery=False) }}">Edit
                 your profile picture</a>
               <a class="dropdown-item" href="{{ url_for('users.edit', id = current_user.id) }}">Edit your details</a>
+              <a class="dropdown-item" href="{{ url_for('users.change_privacy', id = current_user.id) }}">Make your
+                profile
+                {% if current_user.is_private %}
+                public
+                {% elif not current_user.is_private %}
+                private
+                {% endif %}
+              </a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item alert-danger" href="{{ url_for('users.delete', id = current_user.id) }}">DELETE
                 YOUR
@@ -105,6 +113,7 @@
     <strong>SUPER ADMIN ROLE ACTIVE! </strong>
     <a href="{{ url_for('users.index') }}" class="btn btn-primary">All Users!</a>
     <a href="{{ url_for('images.index') }}" class="btn btn-primary">All Images!</a>
+    <a href="{{ url_for('donations.index') }}" class="btn btn-primary">All Donations!</a>
   </footer>
   {% endif %}
   <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

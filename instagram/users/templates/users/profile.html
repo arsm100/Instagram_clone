@@ -3,7 +3,7 @@
 User Profile!
 {% endblock %}
 
-{% block custom_css %}
+{% block custom_head %}
 <link rel="stylesheet" href="./../../../static/css/lightbox.css">
 {% endblock %}
 
@@ -37,10 +37,16 @@ User Profile!
     <div class="image-row">
         <div class="image-set">
             {% for image in User.query.get(id).images %}
-            <a style="display: inline-block; margin:5px" class="image-link" href="{{S3_LOCATION}}{{image.image_name}}"
-                data-lightbox="image-set" data-title="{{image.image_caption|default('')}}">
-                <img class="gallery-image" src="{{S3_LOCATION}}{{image.image_name}}" width=200px height=200px>
-            </a>
+            <div style="display: inline-block; margin:5px">
+                <a class="image-link" href="{{S3_LOCATION}}{{image.image_name}}" data-lightbox="image-set" data-title="{{image.image_caption|default('')}}">
+                    <img style="margin-bottom:5px" class="gallery-image" src="{{S3_LOCATION}}{{image.image_name}}"
+                        width=200px height=200px>
+                </a>
+                {% if id != current_user.id %}
+                <br>
+                <a href="{{ url_for('donations.create', image_id = image.id) }}" class="btn btn-primary">Donate</a>
+                {% endif %}
+            </div>
 
             {% endfor %}
         </div>

@@ -1,5 +1,6 @@
 import os
-from flask import Flask, request, render_template,redirect, url_for
+import braintree
+from flask import Flask, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import login_manager, LoginManager, current_user
@@ -45,12 +46,29 @@ csrf = CSRFProtect(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.session_protection = "basic"
-login_manager.login_message = "Please login to Ahmed's Instagram first."
+login_manager.login_message = "Please login to Aragram first"
 login_manager.login_view = "sessions.login"
 
+# Braintree Setup & Environment Conditions (Sandbox)
+BRAINTREE_MERCHANT_ID = os.environ['BRAINTREE_MERCHANT_ID']
+BRAINTREE_PUBLIC_KEY = os.environ['BRAINTREE_PUBLIC_KEY']
+BRAINTREE_PRIVATE_KEY = os.environ['BRAINTREE_PRIVATE_KEY']
+
+gateway = braintree.BraintreeGateway(
+    braintree.Configuration(
+        braintree.Environment.Sandbox,
+        merchant_id=BRAINTREE_MERCHANT_ID,
+        public_key=BRAINTREE_PUBLIC_KEY,
+        private_key=BRAINTREE_PRIVATE_KEY
+    )
+)
+
+
+def generate_client_token():
+    return gateway.client_token.generate()
+
+
 # App Environment Conditions
-
-
 class Config(object):
     DEBUG = False
     TESTING = False
@@ -74,12 +92,14 @@ app.config.from_object(DevelopmentConfig)
 super_admins = {'ahmedramzy160', 'josh777'}
 
 # Blue Print
+from instagram.users.views import users_blueprint
+from instagram.donations.views import donations_blueprint
 from instagram.images.views import images_blueprint
 from instagram.sessions.views import sessions_blueprint
-from instagram.users.views import users_blueprint
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix="/")
 app.register_blueprint(images_blueprint, url_prefix="/images")
+app.register_blueprint(donations_blueprint, url_prefix="/donations")
 
 
 # Home Page

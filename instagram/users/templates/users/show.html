@@ -14,6 +14,7 @@ One user!
         <th>Profile Pic</th>
         <th>Edit!</th>
         <th>DELETE!</th>
+        <th>Private?</th>
     </tr>
     <tr>
         <td>{{user.id}}</td>
@@ -30,6 +31,7 @@ One user!
             <a href="{{ url_for('users.delete', id = user.id) }}" class="btn btn-primary">DELETE
             </a>
         </td>
+        <td>{{user.is_private}}</td>
     </tr>
     </th>
 

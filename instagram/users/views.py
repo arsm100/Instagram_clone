@@ -131,3 +131,17 @@ def update_or_destroy(id):
             flash('User deleted successfully.')
             return redirect(url_for('home'))
         return render_template('users/delete.html', id=id, form=form, User=User)
+
+@users_blueprint.route("/<id>/change_privacy")
+@login_required
+def change_privacy(id):
+    if current_user.username in super_admins or int(id) == current_user.id:
+        user_editting_privacy = User.query.get(id)
+        user_editting_privacy.is_private = not user_editting_privacy.is_private
+        db.session.add(user_editting_privacy)
+        db.session.commit()
+        flash('User privacy updated successfully.')
+        return redirect(url_for('users.profile', id=id))
+
+
+
