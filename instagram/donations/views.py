@@ -3,6 +3,7 @@ from instagram.images.models import Image
 from instagram.donations.models import Donation
 from flask_login import login_required, current_user
 from instagram import super_admins, generate_client_token, gateway, db, S3_LOCATION
+from instagram.helpers import send_donation_email
 
 
 donations_blueprint = Blueprint(
@@ -33,6 +34,7 @@ def checkout(image_id):
             current_user.id, image_owner_id, image_id, amount)
         db.session.add(new_donation)
         db.session.commit()
+        send_donation_email(current_user.email, amount)
         flash('Donation received successfully.')
         return redirect(url_for('users.profile', id=image_owner_id))
     else:

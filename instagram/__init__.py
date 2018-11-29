@@ -1,5 +1,6 @@
 import os
 import braintree
+import sendgrid
 from flask import Flask, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -68,7 +69,13 @@ def generate_client_token():
     return gateway.client_token.generate()
 
 
+# sendgrid mailing service setup
+SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
+
 # App Environment Conditions
+
+
 class Config(object):
     DEBUG = False
     TESTING = False
@@ -92,10 +99,10 @@ app.config.from_object(DevelopmentConfig)
 super_admins = {'ahmedramzy160', 'josh777'}
 
 # Blue Print
-from instagram.users.views import users_blueprint
-from instagram.donations.views import donations_blueprint
-from instagram.images.views import images_blueprint
 from instagram.sessions.views import sessions_blueprint
+from instagram.images.views import images_blueprint
+from instagram.donations.views import donations_blueprint
+from instagram.users.views import users_blueprint
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix="/")
 app.register_blueprint(images_blueprint, url_prefix="/images")

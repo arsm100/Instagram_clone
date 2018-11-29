@@ -11,8 +11,10 @@ User Profile!
 <hr>
 <h1>{{User.query.get(id).username}}'s Profile</h1>
 <hr>
+{% if User.query.get(id).profile_picture_name != 'generic_profile_pic.png' %}
 <img width=50% src="{{S3_LOCATION}}{{User.query.get(id).profile_picture_name}}" alt="profile picture" class="img-thumbnail">
 <hr>
+{% endif %}
 {% if id==current_user.id %}
 <h2>Welcome to your profile, {{current_user.full_name}}!</h2>
 

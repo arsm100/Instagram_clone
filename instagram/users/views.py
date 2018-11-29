@@ -5,7 +5,7 @@ from instagram.images.models import Image
 from instagram.users.forms import SignupForm, EditForm, DeleteForm, SearchForm
 from instagram import db, login_manager, super_admins, S3_LOCATION
 from flask_login import login_user, logout_user, login_required, login_url, current_user
-from instagram.helpers import delete_photo
+from instagram.helpers import delete_photo, send_signup_email
 
 users_blueprint = Blueprint(
     'users', __name__, template_folder='templates/')
@@ -33,6 +33,7 @@ def create():
                 db.session.add(new_user)
                 db.session.commit()
                 login_user(new_user)
+                send_signup_email(new_user.email)
                 return redirect(url_for('users.profile', User=User, id=current_user.id))
             return render_template('users/new.html', form=form, validation_errors=new_user.validation_errors)
         return render_template('users/new.html', form=form)
@@ -45,7 +46,7 @@ def profile(id):
     if not user.is_private or current_user.username in super_admins or int(id) == current_user.id:
         return render_template('users/profile.html', User=User, id=int(id), S3_LOCATION=S3_LOCATION)
     else:
-        flash('Private account!')
+        flash('No public accounts found!')
         return render_template('users/profile.html', User=User, id=current_user.id, S3_LOCATION=S3_LOCATION)
 
 
@@ -117,7 +118,7 @@ def update_or_destroy(id):
             if len(editted_user.validation_errors) == 0:
                 db.session.add(editted_user)
                 db.session.commit()
-                flash('User details updated successfully.')
+                flash('User details updated successfully')
                 return redirect(url_for('users.profile', id=id))
             return render_template('users/edit.html', id=id, form=form, validation_errors=editted_user.validation_errors)
         return render_template('users/edit.html', id=id, form=form)
@@ -133,7 +134,7 @@ def update_or_destroy(id):
                 db.session.commit()
             db.session.delete(user)
             db.session.commit()
-            flash('User deleted successfully.')
+            flash('User deleted successfully')
             return redirect(url_for('home'))
         return render_template('users/delete.html', id=id, form=form, User=User)
 
@@ -146,7 +147,7 @@ def change_privacy(id):
         user_editting_privacy.is_private = not user_editting_privacy.is_private
         db.session.add(user_editting_privacy)
         db.session.commit()
-        flash('User privacy updated successfully.')
+        flash('User privacy updated successfully')
         return redirect(request.referrer or url_for('users.profile', id=id))
 
 
