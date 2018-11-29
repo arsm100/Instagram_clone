@@ -40,7 +40,6 @@ def checkout(image_id):
     else:
         flash(result.transaction.status)
         flash(f'{result.transaction.processor_response_code} : {result.transaction.processor_response_text}')
-        flash(result.transaction.additional_processor_response)
         return redirect(url_for('users.profile', id=image_owner_id))
 
 

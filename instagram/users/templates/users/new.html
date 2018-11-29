@@ -34,6 +34,11 @@ User Sign-up
   </div>
 
   {{ form.submit (class= 'btn btn-primary')}}
+  <br>
+  OR
+  <br>
+  <a href="{{ url_for('sessions.google_new') }}" class="btn btn-primary">Sign up with google!</a>
+
 
 </form>
 {% endblock %}

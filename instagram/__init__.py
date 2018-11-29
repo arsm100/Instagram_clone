@@ -43,7 +43,6 @@ class DevelopmentConfig(Config):
     DEBUG = True
     GOOGLE_CLIENT_ID = os.environ['GOOGLE_CLIENT_ID']
     GOOGLE_CLIENT_SECRET = os.environ['GOOGLE_CLIENT_SECRET']
-    REDIRECT_URI = os.environ['REDIRECT_URI']
 
 class TestingConfig(Config):
     TESTING = True
@@ -98,6 +97,7 @@ sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
 config = eval((os.environ['APP_SETTINGS']))
 oauth = OAuth()
 REDIRECT_URI = os.environ['REDIRECT_URI']
+REDIRECT_URI_NEW = os.environ['REDIRECT_URI_NEW']
 
 google = oauth.register('google',
     client_id=config.GOOGLE_CLIENT_ID,

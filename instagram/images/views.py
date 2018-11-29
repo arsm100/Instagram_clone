@@ -53,7 +53,8 @@ def upload_image(id):
 
             elif request.form.get('_folder') == 'False':
                 editted_user = User.query.get(current_user.id)
-                delete_photo(editted_user.profile_picture_name)
+                if editted_user.profile_picture_name != 'generic_profile_pic.png':
+                    delete_photo(editted_user.profile_picture_name)
                 editted_user.profile_picture_name = str(image_name)
                 db.session.add(editted_user)
                 db.session.commit()

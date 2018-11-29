@@ -17,10 +17,11 @@ User Sign-in
         {{form.password.label}} {{ form.password (class= 'form-control')}}
     </div>
 
-    <button type="submit" class="btn btn-primary">Submit</button>    
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 <br>
 OR
 <br>
 <a href="{{ url_for('sessions.google_authorize') }}" class="btn btn-primary">Sign in with google!</a>
+
 {% endblock %}

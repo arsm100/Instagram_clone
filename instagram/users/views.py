@@ -128,6 +128,8 @@ def update_or_destroy(id):
             user = User.query.get(id)
             if int(id) == current_user.id:
                 logout_user()
+            if user.profile_picture_name != 'generic_profile_pic.png':
+                    delete_photo(user.profile_picture_name)
             for image in user.images:
                 delete_photo(image.image_name)
                 db.session.delete(image)
