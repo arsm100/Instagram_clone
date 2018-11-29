@@ -66,7 +66,7 @@ def upload_image(id):
             return redirect(url_for('images.upload', id=current_user.id))
     else:
         flash('UNAUTHORIZED!!')
-        return render_template('users/profile.html', id=current_user.id)
+        return redirect(url_for('users.profile', id=current_user.id))
 
 
 @images_blueprint.route("/", methods=["GET"])
@@ -76,7 +76,7 @@ def index():
         images = Image.query.all()
         return render_template('images/index.html', S3_LOCATION=S3_LOCATION, images=images)
     flash('UNAUTHORIZED!!')
-    return render_template('users/profile.html', id=current_user.id)
+    return redirect(url_for('users.profile', id=current_user.id))
 
 
 @images_blueprint.route("/<id>/edit", methods=["GET"])
@@ -89,7 +89,7 @@ def edit(id):
         return render_template('images/edit.html', id=id, form=form, Image=Image, S3_LOCATION=S3_LOCATION)
     else:
         flash('UNAUTHORIZED!!')
-        return render_template('users/profile.html', id=current_user.id)
+        return redirect(url_for('users.profile', id=current_user.id))
 
 
 @images_blueprint.route("/<id>/delete", methods=["GET"])
@@ -101,7 +101,7 @@ def delete(id):
         return render_template('images/delete.html', id=id, form=form, Image=Image, S3_LOCATION=S3_LOCATION)
     else:
         flash('UNAUTHORIZED!!')
-        return render_template('users/profile.html', id=current_user.id)
+        return redirect(url_for('users.profile', id=current_user.id))
 
 
 @images_blueprint.route("/<id>/update", methods=["POST"])
@@ -136,4 +136,4 @@ def gallery_edit(id):
         return render_template('images/gallery_edit.html', id=id, User=User, S3_LOCATION=S3_LOCATION)
     else:
         flash('UNAUTHORIZED!!')
-        return render_template('users/profile.html', id=id)
+        return redirect(url_for('users.profile', id=current_user.id))

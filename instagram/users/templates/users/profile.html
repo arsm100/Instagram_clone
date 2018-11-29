@@ -10,9 +10,16 @@ User Profile!
 {% block content %}
 <hr>
 <h1>{{User.query.get(id).username}}'s Profile</h1>
+{% if User.query.get(current_user.id).following.filter_by(followed_id=id).first() %}
+<a href="{{ url_for('users.unfollow', unfollower = current_user.id, unfollowing=id) }}" id="unfollow" class="btn btn-primary">Unfollow</a>
+
+{% elif id != current_user.id %}
+<a href="{{ url_for('users.follow', follower = current_user.id, following=id) }}" id="follow" class="btn btn-primary">Follow</a>
+{% endif %}
+
 <hr>
 {% if User.query.get(id).profile_picture_name != 'generic_profile_pic.png' %}
-<img width=50% src="{{S3_LOCATION}}{{User.query.get(id).profile_picture_name}}" alt="profile picture" class="img-thumbnail">
+<img width=50% src="{{S3_LOCATION}}{{User.query.get(id).profile_picture_name}}" alt=" profile picture" class="img-thumbnail">
 <hr>
 {% endif %}
 {% if id==current_user.id %}
@@ -31,7 +38,8 @@ User Profile!
     <hr>
     <h2 style="clear: both;">{{User.query.get(id).username}}'s Gallery!</h2>
     {% if id==current_user.id %}
-    <a href="{{ url_for('images.upload', id = current_user.id, gallery=True) }}" class="btn btn-primary">Add images to
+    <a href="{{ url_for('images.upload', id = current_user.id, gallery=True) }}" class="btn btn-primary">Add images
+        to
         your gallery</a>
     <a href="{{ url_for('images.gallery_edit', id = current_user.id) }}" class="btn btn-primary">Edit your gallery</a>
     {% endif %}

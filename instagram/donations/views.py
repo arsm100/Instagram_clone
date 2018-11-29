@@ -50,4 +50,4 @@ def index():
         donations = Donation.query.all()
         return render_template('donations/index.html', S3_LOCATION=S3_LOCATION, Image=Image, donations=donations)
     flash('UNAUTHORIZED!!')
-    return render_template('users/profile.html', id=current_user.id)
+    return redirect(url_for('users.profile', id=current_user.id))

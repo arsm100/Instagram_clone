@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, escape, sessions
 from instagram.users.models import User
 from instagram.images.models import Image
+from instagram.donations.models import Users_Users
 from instagram.users.forms import SignupForm, EditForm, DeleteForm, SearchForm
 from instagram import db, login_manager, super_admins, S3_LOCATION
 from flask_login import login_user, logout_user, login_required, login_url, current_user
@@ -34,7 +35,7 @@ def create():
                 db.session.commit()
                 login_user(new_user)
                 send_signup_email(new_user.email)
-                return redirect(url_for('users.profile', User=User, id=current_user.id))
+                return redirect(url_for('users.profile', id=current_user.id))
             return render_template('users/new.html', form=form, validation_errors=new_user.validation_errors)
         return render_template('users/new.html', form=form)
 
@@ -53,12 +54,12 @@ def profile(id):
 @users_blueprint.route("/<id>", methods=["GET"])
 @login_required
 def show(id):
-    if current_user.username in super_admins or int(id) == current_user.id:
+    if current_user.username in super_admins:
         user = User.query.get(id)
         return render_template('users/show.html', user=user)
     else:
         flash('UNAUTHORIZED!!')
-        return render_template('users/profile.html', id=id)
+        return redirect(url_for('users.profile', id=current_user.id))
 
 
 @users_blueprint.route("/", methods=["GET"])
@@ -68,7 +69,7 @@ def index():
         users = User.query.all()
         return render_template('users/index.html', users=users)
     flash('UNAUTHORIZED!!')
-    return render_template('users/profile.html', id=current_user.id)
+    return redirect(url_for('users.profile', id=current_user.id))
 
 
 @users_blueprint.route("/<id>/settings")
@@ -90,7 +91,7 @@ def edit(id):
         return render_template('users/edit.html', id=id, form=form)
     else:
         flash('UNAUTHORIZED!!')
-        return render_template('users/profile.html', id=id)
+        return redirect(url_for('users.profile', id=current_user.id))
 
 
 @users_blueprint.route("/<id>/delete", methods=["GET"])
@@ -101,7 +102,7 @@ def delete(id):
         return render_template('users/delete.html', id=id, form=form, User=User)
     else:
         flash('UNAUTHORIZED!!')
-        return render_template('users/profile.html', id=id)
+        return redirect(url_for('users.profile', id=current_user.id))
 
 
 @users_blueprint.route("/<id>/update", methods=["POST"])
@@ -129,7 +130,7 @@ def update_or_destroy(id):
             if int(id) == current_user.id:
                 logout_user()
             if user.profile_picture_name != 'generic_profile_pic.png':
-                    delete_photo(user.profile_picture_name)
+                delete_photo(user.profile_picture_name)
             for image in user.images:
                 delete_photo(image.image_name)
                 db.session.delete(image)
@@ -164,4 +165,33 @@ def search():
         return redirect(url_for('users.profile', id=user.id))
     else:
         flash('User doesn\'t exist!')
+        return redirect(url_for('users.profile', id=current_user.id))
+
+
+@users_blueprint.route("<follower>/<following>/follow")
+def follow(follower, following):
+    if current_user.username in super_admins or int(follower) == current_user.id:
+        new_follow = Users_Users(follower, following)
+        db.session.add(new_follow)
+        db.session.commit()
+        flash(f'You are now following {User.query.get(following).username}')
+        # send_follow_email(new_user.email) You have a new follower!
+        return redirect(url_for('users.profile', id=following))
+    else:
+        flash('UNAUTHORIZED!!')
+        return redirect(url_for('users.profile', id=current_user.id))
+
+
+@users_blueprint.route("<unfollower>/<unfollowing>/unfollow")
+def unfollow(unfollower, unfollowing):
+    if current_user.username in super_admins or int(unfollower) == current_user.id:
+        unfollow = Users_Users.query.filter_by(
+            follower_id=unfollower, followed_id=unfollowing).first()
+        db.session.delete(unfollow)
+        db.session.commit()
+        flash(f'You have unfollowed {User.query.get(unfollowing).username}')
+        # send_follow_email(new_user.email) You have a new follower!
+        return redirect(url_for('users.profile', id=unfollowing))
+    else:
+        flash('UNAUTHORIZED!!')
         return redirect(url_for('users.profile', id=current_user.id))

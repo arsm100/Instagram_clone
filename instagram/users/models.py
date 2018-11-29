@@ -6,7 +6,7 @@ from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property
 from instagram.helpers import validation_preparation
 from werkzeug.security import generate_password_hash
-from instagram.donations.models import Donation
+from instagram.donations.models import Donation, Users_Users
 
 
 class User(db.Model, UserMixin):
@@ -27,6 +27,10 @@ class User(db.Model, UserMixin):
                                     Donation.sender_id], back_populates="donor", lazy='dynamic')
     donations_in = db.relationship("Donation", foreign_keys=[
                                    Donation.receiver_id], back_populates="receiver", lazy='dynamic')
+    followers = db.relationship("Users_Users", foreign_keys=[
+        Users_Users.followed_id], back_populates="follower", lazy='dynamic')
+    following = db.relationship("Users_Users", foreign_keys=[
+        Users_Users.follower_id], back_populates="following", lazy='dynamic')
 
     def __init__(self, full_name, email, username, password):
         self.full_name = full_name

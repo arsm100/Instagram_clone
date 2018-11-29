@@ -3,7 +3,7 @@ from instagram.sessions.forms import LoginForm
 from instagram.sessions.models import authenticate
 from instagram.users.models import User
 from flask_login import login_user, logout_user, login_url, login_required, current_user
-from instagram import oauth, google, REDIRECT_URI, REDIRECT_URI_NEW,db
+from instagram import oauth, google, REDIRECT_URI, REDIRECT_URI_NEW, db
 from instagram.helpers import send_signup_email
 import random
 
@@ -60,6 +60,9 @@ def google_authorize_login():
 
 @sessions_blueprint.route('/new', methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        flash('You\'re already logged in!')
+        return redirect(url_for('users.profile', id=current_user.id))
     form = LoginForm()
     if form.validate_on_submit():
         user = authenticate(form.username.data, form.password.data)
