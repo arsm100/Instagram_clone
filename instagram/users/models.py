@@ -34,6 +34,9 @@ class User(db.Model, UserMixin):
         self.username = username
         self.password = password
 
+    def get_user_id(self):
+        return self.id
+
     def __repr__(self):
         return f"User {self.full_name} has email {self.email} and username {self.username}"
 
