@@ -16,7 +16,6 @@
 </head>
 
 <body>
-  <div>
 
     {% for error in validation_errors %}
     <div class="alert alert-danger">
@@ -34,10 +33,9 @@
     {% endif %}
     {% endwith %}
 
-  </div>
 
   <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" style="">
       <a class="navbar-brand" href="{{url_for('home')}}">
         <img src="./../../../static/images/logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
         <strong><span style="font-family:cursive"> Aragram </span></strong>
@@ -49,6 +47,9 @@
       {% if current_user.is_authenticated %}
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{{url_for('users.feed', id = current_user.id)}}">Feed <span class="sr-only"></span></a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="{{url_for('users.profile', id = current_user.id)}}">Profile <span class="sr-only"></span></a>
           </li>
@@ -88,14 +89,14 @@
     </nav>
     {% endif %}
   </header>
-  <br>
-  <div class="container">
-    {% if current_user.is_authenticated %}
-    <div class="container">
+  {% if current_user.is_authenticated %}
+  <div class="container-fluid">
+    <br>
+    <div class="container-fluid">
       <div class="d-flex justify-content-left h-100">
         <div class="image_outer_container">
           <div class="image_inner_container">
-            <a href="{{ url_for('users.profile', id = current_user.id) }}"><img class="img-rounded" src="{{current_user.image_url}}"
+            <a href="{{ url_for('users.profile', id = current_user.id) }}"><img class="img-rounded" src="{{current_user.profile_image_url}}"
                 alt="profile picture">
             </a>
           </div>
@@ -104,6 +105,7 @@
     </div>
     <!-- Hi #{{ current_user.full_name }}#! You are logged in! -->
   </div>
+  <hr>
   {% endif %}
   {% block content %}
   {% endblock %}

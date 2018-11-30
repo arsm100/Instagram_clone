@@ -32,20 +32,27 @@ SECRET_KEY = os.urandom(32)
 app.config['SECRET_KEY'] = SECRET_KEY
 
 # App Environment Conditions
+
+
 class Config(object):
     DEBUG = False
     TESTING = False
 
+
 class ProductionConfig(Config):
     DEBUG = False
+
 
 class DevelopmentConfig(Config):
     DEBUG = True
     GOOGLE_CLIENT_ID = os.environ['GOOGLE_CLIENT_ID']
     GOOGLE_CLIENT_SECRET = os.environ['GOOGLE_CLIENT_SECRET']
+    # SQLALCHEMY_ECHO = True
+
 
 class TestingConfig(Config):
     TESTING = True
+
 
 app.config.from_object(eval(os.environ['APP_SETTINGS']))
 
@@ -100,23 +107,22 @@ REDIRECT_URI = os.environ['REDIRECT_URI']
 REDIRECT_URI_NEW = os.environ['REDIRECT_URI_NEW']
 
 google = oauth.register('google',
-    client_id=config.GOOGLE_CLIENT_ID,
-    client_secret=config.GOOGLE_CLIENT_SECRET,
-    access_token_url='https://accounts.google.com/o/oauth2/token',
-    access_token_params=None,
-    refresh_token_url=None,
-    authorize_url='https://accounts.google.com/o/oauth2/auth',
-    api_base_url='https://www.googleapis.com/oauth2/v1/',
-    client_kwargs={
-        'scope': 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-        'token_endpoint_auth_method': 'client_secret_basic',
-        'token_placement': 'header',
-        'prompt': 'consent'
-    }
-)
+                        client_id=config.GOOGLE_CLIENT_ID,
+                        client_secret=config.GOOGLE_CLIENT_SECRET,
+                        access_token_url='https://accounts.google.com/o/oauth2/token',
+                        access_token_params=None,
+                        refresh_token_url=None,
+                        authorize_url='https://accounts.google.com/o/oauth2/auth',
+                        api_base_url='https://www.googleapis.com/oauth2/v1/',
+                        client_kwargs={
+                            'scope': 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+                            'token_endpoint_auth_method': 'client_secret_basic',
+                            'token_placement': 'header',
+                            'prompt': 'consent'
+                        }
+                        )
 
 oauth.init_app(app)
-
 
 
 # SuperAdmins
@@ -127,10 +133,12 @@ from instagram.sessions.views import sessions_blueprint
 from instagram.images.views import images_blueprint
 from instagram.donations.views import donations_blueprint
 from instagram.users.views import users_blueprint
+from instagram.followings.views import followings_blueprint
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix="/")
 app.register_blueprint(images_blueprint, url_prefix="/images")
 app.register_blueprint(donations_blueprint, url_prefix="/donations")
+app.register_blueprint(followings_blueprint, url_prefix="/")
 
 
 # Home Page

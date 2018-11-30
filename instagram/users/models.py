@@ -6,7 +6,8 @@ from sqlalchemy.orm import validates
 from sqlalchemy.ext.hybrid import hybrid_property
 from instagram.helpers import validation_preparation
 from werkzeug.security import generate_password_hash
-from instagram.donations.models import Donation, Users_Users
+from instagram.donations.models import Donation
+from instagram.followings.models import Users_Users
 
 
 class User(db.Model, UserMixin):
@@ -22,15 +23,16 @@ class User(db.Model, UserMixin):
     profile_picture_name = db.Column(
         db.Text, nullable=False, server_default='generic_profile_pic.png')
     is_private = db.Column(db.Boolean, nullable=False, server_default='False')
-    images = db.relationship("Image", backref="users", lazy=True)
+    images = db.relationship("Image", backref="users", lazy=True,
+                             order_by="desc(Image.id)", cascade="delete, delete-orphan")
     donations_out = db.relationship("Donation", foreign_keys=[
-                                    Donation.sender_id], back_populates="donor", lazy='dynamic')
+                                    Donation.sender_id], back_populates="donor", lazy='dynamic', cascade="delete, delete-orphan")
     donations_in = db.relationship("Donation", foreign_keys=[
-                                   Donation.receiver_id], back_populates="receiver", lazy='dynamic')
+                                   Donation.receiver_id], back_populates="receiver", lazy='dynamic', cascade="delete, delete-orphan")
     followers = db.relationship("Users_Users", foreign_keys=[
-        Users_Users.followed_id], back_populates="follower", lazy='dynamic')
+        Users_Users.followed_id], back_populates="follower", lazy='dynamic', cascade="delete, delete-orphan")
     following = db.relationship("Users_Users", foreign_keys=[
-        Users_Users.follower_id], back_populates="following", lazy='dynamic')
+        Users_Users.follower_id], back_populates="following", lazy='dynamic', cascade="delete, delete-orphan")
 
     def __init__(self, full_name, email, username, password):
         self.full_name = full_name
@@ -83,5 +85,40 @@ class User(db.Model, UserMixin):
         return generate_password_hash(password)
 
     @hybrid_property
-    def image_url(self):
+    def profile_image_url(self):
         return f'{S3_LOCATION}{self.profile_picture_name}'
+
+    @hybrid_property
+    def donated_out(self):
+        return self.donations_out.all()
+
+    @hybrid_property
+    def donated_in(self):
+        return self.donations_in.all()
+
+    @hybrid_property
+    def is_followed_by(self):
+        follower_usernames = []
+        follower_list = self.followers.all()
+        for follower in follower_list:
+            follower_usernames.append(
+                User.query.get(follower.follower_id).username)
+        return follower_usernames
+
+    @hybrid_property
+    def is_following_usernames(self):
+        following_usernames = []
+        following_list = self.following.all()
+        for following in following_list:
+            following_usernames.append(
+                User.query.get(following.followed_id).username)
+        return following_usernames
+
+    @hybrid_property
+    def is_following_ids(self):
+        following_ids = []
+        following_list = self.following.all()
+        for following in following_list:
+            following_ids.append(
+                User.query.get(following.followed_id).id)
+        return following_ids

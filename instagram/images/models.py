@@ -4,7 +4,7 @@ from instagram.users.models import User, UserMixin, db, S3_LOCATION, hybrid_prop
 from flask_login import current_user
 
 
-class Image(db.Model, UserMixin):
+class Image(db.Model):
 
     __tablename__ = 'images'
 
@@ -16,7 +16,7 @@ class Image(db.Model, UserMixin):
 
     def __init__(self, image_name, user_id, image_caption=None):
         self.user_id = user_id
-        self.image_name = f'{self.user_id}.{self.id}.{image_name}'
+        self.image_name = image_name
         self.image_caption = image_caption
 
     @hybrid_property

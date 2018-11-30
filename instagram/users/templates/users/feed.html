@@ -1,0 +1,41 @@
+{% extends "_base.html" %}
+{% block title %}
+User Feed!
+{% endblock %}
+
+{% block custom_head %}
+<link rel="stylesheet" href="./../../../static/css/lightbox.css">
+
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% for followed_id in User.query.get(id).is_following_ids %}
+    <div class="image-row">
+        {% for image in User.query.get(followed_id).images %}
+        <div style="display: block; margin:5px">
+            <a href="{{ url_for('users.profile', id = followed_id) }}"><img style='width:80px; height:80px; float:left; border: 1px solid blue; border-radius:40px'
+                    class="img-rounded" src="{{User.query.get(followed_id).profile_image_url}}" alt="profile picture">
+            </a>
+            <a style="float:left;position:relative; top:30px;font-size:20px; margin-left:9px" href="{{ url_for('users.profile', id = followed_id) }}">{{User.query.get(followed_id).username}}</a>
+            <br>
+            <a class="image-link" href="{{S3_LOCATION}}{{image.image_name}}" data-lightbox="image-set" data-title="{{image.image_caption|default('')}}">
+                <img style="margin-bottom:5px" class="gallery-image" src="{{S3_LOCATION}}{{image.image_name}}" width=200px
+                    height=200px>
+            </a>
+            <br>
+            <a style="margin-left:75px" href="{{ url_for('donations.create', image_id = image.id) }}" class="btn btn-primary">Donate</a>
+        </div>
+        <hr>
+        {% endfor %}
+    </div>
+    {% endfor %}
+
+</div>
+{% endblock %}
+
+
+{% block custom_js %}
+<script src="./../../../static/js/lightbox.js"></script>
+
+{% endblock %}
