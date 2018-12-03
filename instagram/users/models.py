@@ -33,6 +33,8 @@ class User(db.Model, UserMixin):
         Users_Users.followed_id], back_populates="follower", lazy='dynamic', cascade="delete, delete-orphan")
     following = db.relationship("Users_Users", foreign_keys=[
         Users_Users.follower_id], back_populates="following", lazy='dynamic', cascade="delete, delete-orphan")
+    pending_in = db.relationship("Users_Users", foreign_keys=[
+        Users_Users.follower_id], back_populates="following", lazy='dynamic', cascade="delete, delete-orphan")
 
     def __init__(self, full_name, email, username, password):
         self.full_name = full_name
