@@ -667,3 +667,19 @@ td {
   display: table-cell;
   vertical-align: middle;
 }
+#jumbotron{
+background-image: url(/../../static/images/jumbotron.jpeg); 
+color:rgb(255, 255, 255);
+height:100vh; 
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover
+}
+#jumbotron-msg{
+  position:relative; 
+  top: 25%; 
+  padding:0px
+}
+.image-column{
+width: 210px;
+}

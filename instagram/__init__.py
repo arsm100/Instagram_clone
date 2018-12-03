@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from flask_login import login_manager, LoginManager, current_user
 from flask_wtf import CSRFProtect
 from authlib.flask.client import OAuth
+from flask_assets import Environment, Bundle
 
 
 ######################################
@@ -67,7 +68,7 @@ app.config['S3_KEY'] = S3_KEY
 app.config['S3_SECRET'] = S3_SECRET
 
 # CSRF setup
-app.config['CSRF_ENABLED'] = True
+# app.config['CSRF_ENABLED'] = True
 csrf = CSRFProtect(app)
 
 # Login manager setup
@@ -128,12 +129,23 @@ oauth.init_app(app)
 # SuperAdmins
 super_admins = {'ahmedramzy160', 'josh777'}
 
+# Flask_Assets
+assets = Environment(app)
+
+js = Bundle('js/vendor/jquery_3.2.1.js', 'js/vendor/brainTree_1.14.1.js', 'js/vendor/popper_1.11.0.js', 'js/vendor/bootstrap_4.1.1.js', 'js/vendor/following_counter.js', 
+            filters='jsmin', output='gen/packed.%(version)s.js')
+
+css = Bundle('css/vendor/bootstrap_4.1.1.css', 'css/style.css', 'css/vendor/lightbox.css', 'css/vendor/following_counter.css', 'css/vendor/fontawesome_5.5.0.css',
+             filters='cssmin', output='gen/packed.%(version)s.css')
+
+assets.register({'js_all': js, 'css_all': css})
+
 # Blue Print
-from instagram.sessions.views import sessions_blueprint
-from instagram.images.views import images_blueprint
-from instagram.donations.views import donations_blueprint
-from instagram.users.views import users_blueprint
 from instagram.followings.views import followings_blueprint
+from instagram.users.views import users_blueprint
+from instagram.donations.views import donations_blueprint
+from instagram.images.views import images_blueprint
+from instagram.sessions.views import sessions_blueprint
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix="/")
 app.register_blueprint(images_blueprint, url_prefix="/images")
