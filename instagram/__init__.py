@@ -132,7 +132,7 @@ super_admins = {'ahmedramzy160', 'josh777'}
 # Flask_Assets
 assets = Environment(app)
 
-js = Bundle('js/vendor/jquery_3.2.1.js', 'js/vendor/brainTree_1.14.1.js', 'js/vendor/popper_1.11.0.js', 'js/vendor/bootstrap_4.1.1.js', 'js/vendor/following_counter.js', 
+js = Bundle('js/vendor/brainTree_1.14.1.js', 'js/vendor/jquery_3.2.1.js', 'js/vendor/popper_1.11.0.js', 'js/vendor/bootstrap_4.1.1.js', 'js/vendor/following_counter.js', 
             filters='jsmin', output='gen/packed.%(version)s.js')
 
 css = Bundle('css/vendor/bootstrap_4.1.1.css', 'css/style.css', 'css/vendor/lightbox.css', 'css/vendor/following_counter.css', 'css/vendor/fontawesome_5.5.0.css',
