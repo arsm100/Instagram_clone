@@ -10,11 +10,12 @@
   </title>
   <!-- Bootstrap 4.1.1 -->
   {% assets "css_all" %}
-<link rel="stylesheet" href="{{ ASSET_URL }}">
-{% endassets %}
+  <link rel="stylesheet" href="{{ ASSET_URL }}">
+  {% endassets %}
   {% assets "js_all" %}
-    <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-{% endassets %}
+  <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+  {% endassets %}
+  <link rel="shortcut icon" href="./../../../static/images/favicon.ico" type="image/x-icon">
   {% block custom_head %}
   {% endblock %}
 </head>
